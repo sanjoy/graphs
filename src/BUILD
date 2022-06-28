@@ -36,3 +36,9 @@ cc_test(
     srcs = ["analyses_test.cpp"],
     deps = [":analyses", ":test"]
 )
+
+cc_test(
+    name = "random_test",
+    srcs = ["random_test.cpp"],
+    deps = [":random", ":test"]
+)
