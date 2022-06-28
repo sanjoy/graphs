@@ -176,7 +176,7 @@ std::optional<std::string> CheckConsistency(Graph *g) {
     return ss.str();
 }
 
-std::ostream& operator<<(std::ostream &os, const Graph::EdgeType &e) {
+std::ostream &operator<<(std::ostream &os, const Graph::EdgeType &e) {
   os << "(" << e.first << ", " << e.second << ")";
   return os;
 }

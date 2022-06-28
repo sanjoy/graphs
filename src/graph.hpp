@@ -100,5 +100,5 @@ std::unique_ptr<Graph> CreateConcreteGraph(Graph::NodeCountType num_nodes,
 
 std::optional<std::string> CheckConsistency(Graph *g);
 
-std::ostream& operator<<(std::ostream&, const Graph::EdgeType&);
+std::ostream &operator<<(std::ostream &, const Graph::EdgeType &);
 } // namespace graph
