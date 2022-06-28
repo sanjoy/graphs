@@ -22,6 +22,10 @@ cc_library(
     srcs = ["random_graph.cpp"],
     hdrs = ["random_graph.hpp"],
     deps = [":graph", ":random"]
+cc_library(
+    name = "logging",
+    srcs = ["logging.cpp"],
+    hdrs = ["logging.hpp"],
 )
 
 cc_library(
