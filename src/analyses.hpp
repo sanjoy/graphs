@@ -5,6 +5,11 @@
 
 namespace graph {
 std::optional<Graph::NodeCountType> ComputeMinDegree(Graph *g);
-double ComputeCheegerConstantUpperBound(Graph *g, RandomBitGenerator *generator,
-                                        int num_iters);
+
+// Unclear how to get good probabilistic bounds on the cheeger constant.
+double DO_NOT_USE_ComputeCheegerConstantUpperBound(
+    Graph *g, RandomBitGenerator *generator, int num_iters);
+
+// Runs in exponential time.
+std::optional<double> ComputeExactCheegerConstant(Graph *g);
 } // namespace graph

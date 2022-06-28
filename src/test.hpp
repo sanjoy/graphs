@@ -14,7 +14,7 @@ void ClearAssertFailed();
     return;                                                                    \
   }
 
-#define CHECK_HAS_VALUE(var, expr)                                             \
+#define CHECK_HAS_VALUE_AND_ASSIGN(var, expr)                                  \
   auto __expr = expr;                                                          \
   CHECK(__expr.has_value());                                                   \
   var = *__expr;
@@ -57,6 +57,7 @@ void ClearAssertFailed();
 
 #define RUN_MAIN(TEST_LIST)                                                    \
   do {                                                                         \
+    std::cerr.precision(std::numeric_limits<double>::max_digits10);            \
     std::vector<std::string> failed_tests;                                     \
     TEST_LIST(__IMPL__RUN_TEST);                                               \
     return failed_tests.empty() ? 0 : 1;                                       \
