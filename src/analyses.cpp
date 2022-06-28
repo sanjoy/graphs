@@ -70,8 +70,10 @@ double ComputeCheegerConstantUpperBound(Graph *g, RandomBitGenerator *generator,
     if (selected_node_count == node_count)
       continue;
 
-    if (selected_node_count > node_count / 2)
+    if (selected_node_count > node_count / 2) {
       selected_nodes.flip();
+      selected_node_count = node_count - selected_node_count;
+    }
 
     Graph::NodeCountType boundary_nodes = FindBoundaryNodes(g, selected_nodes);
     double this_upper_bound = static_cast<double>(boundary_nodes) /
