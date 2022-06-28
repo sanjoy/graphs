@@ -19,7 +19,29 @@ void ClearAssertFailed();
   CHECK(__expr.has_value());                                                   \
   var = *__expr;
 
-#define CHECK_EQ(a, b) CHECK((a) == (b))
+#define PRINT_VAR(var)                                                         \
+  do {                                                                         \
+    std::cerr << #var " = " << var << std::endl;                               \
+  } while (0)
+
+#define PRINT_VECTOR(vect)                                                     \
+  do {                                                                         \
+    for (int i = 0, e = vect.size(); i != e; i++) {                            \
+      std::cerr << #vect << "[" << i << "] = " << vect[i] << std::endl;        \
+    }                                                                          \
+  } while (0)
+
+#define CHECK_EQ(a, b)                                                         \
+  do {                                                                         \
+    auto __a = (a);                                                            \
+    auto __b = (b);                                                            \
+    if (__a != __b) {                                                          \
+      AssertFailed(#a " != " #b, __FILE__, __LINE__);                          \
+      std::cerr << #a << " = " << __a << std::endl;                            \
+      std::cerr << #b << " = " << __b << std::endl;                            \
+      return;                                                                  \
+    }                                                                          \
+  } while (0)
 
 #define __IMPL__RUN_TEST(fn)                                                   \
   do {                                                                         \
@@ -42,8 +64,3 @@ void ClearAssertFailed();
 
 #define DEFINE_MAIN(TEST_LIST)                                                 \
   int main() { RUN_MAIN(TEST_LIST); }
-
-#define PRINT_VAR(var)                                                         \
-  do {                                                                         \
-    std::cerr << #var " = " << var << std::endl;                               \
-  } while (0)
