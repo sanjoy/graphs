@@ -1,6 +1,8 @@
 #pragma once
 
 #include <iostream>
+#include <string>
+#include <vector>
 
 namespace graph {
 void AssertFailed(const char *msg, const char *file, int line);

@@ -17,6 +17,12 @@ cc_library(
     deps = [":graph", ":random"]
 )
 
+cc_library(
+    name = "random_graph",
+    srcs = ["random_graph.cpp"],
+    hdrs = ["random_graph.hpp"],
+    deps = [":graph", ":random"]
+)
 
 cc_library(
     name = "test",
@@ -41,4 +47,10 @@ cc_test(
     name = "random_test",
     srcs = ["random_test.cpp"],
     deps = [":random", ":test"]
+)
+
+cc_test(
+    name = "random_graph_test",
+    srcs = ["random_graph_test.cpp"],
+    deps = [":random_graph", ":test"]
 )

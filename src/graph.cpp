@@ -175,4 +175,9 @@ std::optional<std::string> CheckConsistency(Graph *g) {
   else
     return ss.str();
 }
+
+std::ostream& operator<<(std::ostream &os, const Graph::EdgeType &e) {
+  os << "(" << e.first << ", " << e.second << ")";
+  return os;
+}
 } // namespace graph
