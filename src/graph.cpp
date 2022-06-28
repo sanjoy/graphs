@@ -8,6 +8,46 @@
 
 namespace graph {
 namespace {
+class FiniteNodeIterator : public Graph::NodeIterator {
+public:
+  FiniteNodeIterator(Graph::NodeCountType num_nodes) : num_nodes_(num_nodes) {}
+
+  Graph::NodeType Get() override { return i_; }
+
+  void Next() override {
+    assert(!IsAtEnd());
+    i_++;
+  }
+
+  bool IsAtEnd() override { return i_ == num_nodes_; }
+
+private:
+  Graph::NodeCountType i_ = 0;
+  const Graph::NodeCountType num_nodes_;
+};
+
+class InfiniteNodeIterator : public Graph::NodeIterator {
+public:
+  InfiniteNodeIterator() {}
+
+  Graph::NodeType Get() override { return i_; }
+
+  void Next() override { i_++; }
+
+  bool IsAtEnd() override { return false; }
+
+private:
+  Graph::NodeCountType i_ = 0;
+};
+} // namespace
+
+std::unique_ptr<Graph::NodeIterator> Graph::GetNodes() {
+  if (auto node_count = GetNodeCountIfFinite())
+    return std::make_unique<FiniteNodeIterator>(*node_count);
+  return std::make_unique<InfiniteNodeIterator>();
+}
+
+namespace {
 class ConcreteGraph final : public Graph {
 public:
   ConcreteGraph(Graph::NodeCountType num_nodes,
@@ -35,24 +75,6 @@ public:
       single_edges_.push_back(e);
   }
 
-  class NodeIterator : public Graph::NodeIterator {
-  public:
-    NodeIterator(Graph::NodeCountType num_nodes) : num_nodes_(num_nodes) {}
-
-    NodeType Get() override { return i_; }
-
-    void Next() override {
-      assert(!IsAtEnd());
-      i_++;
-    }
-
-    bool IsAtEnd() override { return i_ == num_nodes_; }
-
-  private:
-    Graph::NodeCountType i_ = 0;
-    const Graph::NodeCountType num_nodes_;
-  };
-
   class EdgeIterator : public Graph::EdgeIterator {
   public:
     EdgeIterator(std::span<Graph::EdgeType> edges) : edges_(edges) {}
@@ -68,12 +90,12 @@ public:
     std::span<Graph::EdgeType> edges_;
   };
 
-  std::unique_ptr<Graph::NodeIterator> GetNodes() override {
-    return std::make_unique<NodeIterator>(num_nodes_);
-  }
-
   std::unique_ptr<Graph::EdgeIterator> GetEdges() override {
     return std::make_unique<EdgeIterator>(single_edges_);
+  }
+
+  std::optional<NodeCountType> GetNodeCountIfFinite() override {
+    return num_nodes_;
   }
 
   std::unique_ptr<Graph::EdgeIterator>

@@ -39,4 +39,4 @@ void TestIterators_2() {
   F(TestIterators_1)                                                           \
   F(TestIterators_2)
 
-int main() { RUN_MAIN(TEST_LIST); }
+DEFINE_MAIN(TEST_LIST)

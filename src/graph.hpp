@@ -32,12 +32,23 @@ public:
     virtual ~EdgeIterator();
   };
 
-  virtual std::unique_ptr<NodeIterator> GetNodes() = 0;
+  virtual std::unique_ptr<NodeIterator> GetNodes();
   virtual std::unique_ptr<EdgeIterator> GetEdges() = 0;
   virtual std::unique_ptr<EdgeIterator> GetEdgesWithNode(NodeType n) = 0;
 
+  virtual std::optional<NodeCountType> GetNodeCountIfFinite() = 0;
+
   virtual std::optional<std::string> CheckConsistency() = 0;
 };
+
+inline bool IsFinite(Graph *g, Graph::NodeCountType *node_count = nullptr) {
+  if (auto maybe_node_count = g->GetNodeCountIfFinite()) {
+    if (node_count)
+      *node_count = maybe_node_count.value();
+    return true;
+  }
+  return false;
+}
 
 namespace detail {
 
