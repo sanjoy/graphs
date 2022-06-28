@@ -43,11 +43,14 @@ static Graph::NodeCountType PickRandomSubset(RandomBitGenerator *generator,
 static Graph::NodeCountType FindBoundaryNodes(Graph *g,
                                               const std::vector<bool> &nodes) {
   Graph::NodeCountType boundary_size = 0;
+  std::vector<bool> boundary_set(nodes.size(), false);
   for (size_t i = 0, e = nodes.size(); i != e; i++) {
     if (nodes[i]) {
       for (auto e : Iterate(g->GetEdgesWithNode(i))) {
-        if (!nodes[e.second])
+        if (!nodes[e.second] && !boundary_set[e.second]) {
           boundary_size++;
+          boundary_set[e.second] = true;
+        }
       }
     }
   }
@@ -139,6 +142,9 @@ std::optional<double> ComputeExactCheegerConstant(Graph *g) {
     double this_upper_bound = static_cast<double>(boundary_nodes) /
                               static_cast<double>(selected_node_count);
 
+    assert(boundary_nodes <= (node_count - selected_node_count) &&
+           "Cannot have more boundary nodes that the number of nodes outside "
+           "the region!");
     LOG_VAR(selected_node_count);
     LOG_VAR(selected_nodes);
     LOG_VAR(boundary_nodes);

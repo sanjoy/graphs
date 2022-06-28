@@ -53,7 +53,7 @@ ComputeExactCheegerConstantForCompleteGraph(int k, bool self_loops) {
   for (int i = 0; i < k; i++) {
     if (self_loops)
       edges.push_back({i, i});
-    for (int j = i + 1; i < k; i++)
+    for (int j = i + 1; j < k; j++)
       edges.push_back({i, j});
   }
 
@@ -79,14 +79,14 @@ static void TestComputeExactCheegerConstant_K9() {
   CHECK_HAS_VALUE_AND_ASSIGN(double cheeger_constant,
                              ComputeExactCheegerConstantForCompleteGraph(
                                  /*k=*/9, /*self_loops=*/false));
-  CHECK_EQ(cheeger_constant, 1.0);
+  CHECK_EQ(cheeger_constant, 1.25);
 }
 
 static void TestComputeExactCheegerConstant_K9_WithSelfLoops() {
   CHECK_HAS_VALUE_AND_ASSIGN(double cheeger_constant,
                              ComputeExactCheegerConstantForCompleteGraph(
                                  /*k=*/9, /*self_loops=*/true));
-  CHECK_EQ(cheeger_constant, 1.0);
+  CHECK_EQ(cheeger_constant, 1.25);
 }
 
 static std::optional<double>
@@ -107,25 +107,58 @@ static void TestComputeExactCheegerConstant_RandomGraph_9_3() {
 static void TestComputeExactCheegerConstant_RandomGraph_10_4() {
   CHECK_HAS_VALUE_AND_ASSIGN(double cheeger_constant,
                              ComputeExactCheegerConstantForRandomGraph(10, 4));
-  CHECK_EQ(cheeger_constant, 1.3999999999999999);
+  CHECK_EQ(cheeger_constant, 3.0 / 5.0);
 }
 
 static void TestComputeExactCheegerConstant_RandomGraph_15_3() {
   CHECK_HAS_VALUE_AND_ASSIGN(double cheeger_constant,
                              ComputeExactCheegerConstantForRandomGraph(15, 3));
-  CHECK_EQ(cheeger_constant, 0.5);
+  CHECK_EQ(cheeger_constant, 3.0 / 7.0);
 }
 
-static void TestComputeExactCheegerConstant_K10_Disconnected() {
+static void TestComputeExactCheegerConstant_K10_Disconnected_1() {
   std::vector<Graph::EdgeType> edges;
   for (int i = 0; i < 9; i++)
     for (int j = i + 1; j < 9; j++)
       edges.push_back({i, j});
 
-  std::unique_ptr<Graph> ring_graph = CreateConcreteGraph(10, edges);
+  std::unique_ptr<Graph> g = CreateConcreteGraph(10, edges);
   CHECK_HAS_VALUE_AND_ASSIGN(double cheeger_constant,
-                             ComputeExactCheegerConstant(ring_graph.get()));
+                             ComputeExactCheegerConstant(g.get()));
   CHECK_EQ(cheeger_constant, 0);
+}
+
+static void TestComputeExactCheegerConstant_K10_Disconnected_2() {
+  std::vector<Graph::EdgeType> edges;
+  for (int i = 0; i < 10; i++) {
+    for (int j = i + 1; j < 10; j++) {
+      if (i == 5 || j == 5)
+        continue;
+      edges.push_back({i, j});
+    }
+  }
+
+  std::unique_ptr<Graph> g = CreateConcreteGraph(10, edges);
+  CHECK_HAS_VALUE_AND_ASSIGN(double cheeger_constant,
+                             ComputeExactCheegerConstant(g.get()));
+  CHECK_EQ(cheeger_constant, 0);
+}
+
+static void TestComputeExactCheegerConstant_AlmostK10() {
+  std::vector<Graph::EdgeType> edges;
+  for (int i = 0; i < 10; i++) {
+    for (int j = i + 1; j < 10; j++) {
+      if (i == 5 && j == 6)
+        continue;
+
+      edges.push_back({i, j});
+    }
+  }
+
+  std::unique_ptr<Graph> g = CreateConcreteGraph(10, edges);
+  CHECK_HAS_VALUE_AND_ASSIGN(double cheeger_constant,
+                             ComputeExactCheegerConstant(g.get()));
+  CHECK_EQ(cheeger_constant, 1.0);
 }
 
 #define TEST_LIST(F)                                                           \
@@ -140,6 +173,8 @@ static void TestComputeExactCheegerConstant_K10_Disconnected() {
   F(TestComputeExactCheegerConstant_RandomGraph_9_3)                           \
   F(TestComputeExactCheegerConstant_RandomGraph_10_4)                          \
   F(TestComputeExactCheegerConstant_RandomGraph_15_3)                          \
-  F(TestComputeExactCheegerConstant_K10_Disconnected)
+  F(TestComputeExactCheegerConstant_K10_Disconnected_1)                        \
+  F(TestComputeExactCheegerConstant_K10_Disconnected_2)                        \
+  F(TestComputeExactCheegerConstant_AlmostK10)
 
 DEFINE_MAIN(TEST_LIST)
