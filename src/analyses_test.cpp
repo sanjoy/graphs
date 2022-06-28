@@ -1,5 +1,6 @@
 #include "analyses.hpp"
 #include "random.hpp"
+#include "random_graph.hpp"
 #include "test.hpp"
 
 #include <vector>
@@ -43,7 +44,7 @@ static void TestComputeExactCheegerConstant_Ring4() {
   std::unique_ptr<Graph> ring_graph = CreateConcreteGraph(4, edges);
   CHECK_HAS_VALUE_AND_ASSIGN(double cheeger_constant,
                              ComputeExactCheegerConstant(ring_graph.get()));
-  CHECK_EQ(cheeger_constant, 2.0 / 3.0);
+  CHECK_EQ(cheeger_constant, 1.0);
 }
 
 static std::optional<double>
@@ -64,28 +65,67 @@ static void TestComputeExactCheegerConstant_K20() {
   CHECK_HAS_VALUE_AND_ASSIGN(double cheeger_constant,
                              ComputeExactCheegerConstantForCompleteGraph(
                                  /*k=*/20, /*self_loops=*/false));
-  CHECK_EQ(cheeger_constant, 0.052631578947368418);
+  CHECK_EQ(cheeger_constant, 1.0);
 }
 
 static void TestComputeExactCheegerConstant_K20_WithSelfLoops() {
   CHECK_HAS_VALUE_AND_ASSIGN(double cheeger_constant,
                              ComputeExactCheegerConstantForCompleteGraph(
                                  /*k=*/20, /*self_loops=*/true));
-  CHECK_EQ(cheeger_constant, 0.052631578947368418);
+  CHECK_EQ(cheeger_constant, 1.0);
 }
 
 static void TestComputeExactCheegerConstant_K9() {
   CHECK_HAS_VALUE_AND_ASSIGN(double cheeger_constant,
                              ComputeExactCheegerConstantForCompleteGraph(
-                                 /*k=*/20, /*self_loops=*/false));
-  CHECK_EQ(cheeger_constant, 0.052631578947368418);
+                                 /*k=*/9, /*self_loops=*/false));
+  CHECK_EQ(cheeger_constant, 1.0);
 }
 
 static void TestComputeExactCheegerConstant_K9_WithSelfLoops() {
   CHECK_HAS_VALUE_AND_ASSIGN(double cheeger_constant,
                              ComputeExactCheegerConstantForCompleteGraph(
-                                 /*k=*/20, /*self_loops=*/true));
-  CHECK_EQ(cheeger_constant, 0.052631578947368418);
+                                 /*k=*/9, /*self_loops=*/true));
+  CHECK_EQ(cheeger_constant, 1.0);
+}
+
+static std::optional<double>
+ComputeExactCheegerConstantForRandomGraph(Graph::NodeCountType num_nodes,
+                                          Graph::NodeCountType avg_degree) {
+  auto rbg = CreateDefaultRandomBitGenerator();
+  std::unique_ptr<Graph> complete_graph =
+      CreateRandomSparseGraph(rbg.get(), num_nodes, avg_degree);
+  return ComputeExactCheegerConstant(complete_graph.get());
+}
+
+static void TestComputeExactCheegerConstant_RandomGraph_9_3() {
+  CHECK_HAS_VALUE_AND_ASSIGN(double cheeger_constant,
+                             ComputeExactCheegerConstantForRandomGraph(9, 3));
+  CHECK_EQ(cheeger_constant, 0.5);
+}
+
+static void TestComputeExactCheegerConstant_RandomGraph_10_4() {
+  CHECK_HAS_VALUE_AND_ASSIGN(double cheeger_constant,
+                             ComputeExactCheegerConstantForRandomGraph(10, 4));
+  CHECK_EQ(cheeger_constant, 1.3999999999999999);
+}
+
+static void TestComputeExactCheegerConstant_RandomGraph_15_3() {
+  CHECK_HAS_VALUE_AND_ASSIGN(double cheeger_constant,
+                             ComputeExactCheegerConstantForRandomGraph(15, 3));
+  CHECK_EQ(cheeger_constant, 0.5);
+}
+
+static void TestComputeExactCheegerConstant_K10_Disconnected() {
+  std::vector<Graph::EdgeType> edges;
+  for (int i = 0; i < 9; i++)
+    for (int j = i + 1; j < 9; j++)
+      edges.push_back({i, j});
+
+  std::unique_ptr<Graph> ring_graph = CreateConcreteGraph(10, edges);
+  CHECK_HAS_VALUE_AND_ASSIGN(double cheeger_constant,
+                             ComputeExactCheegerConstant(ring_graph.get()));
+  CHECK_EQ(cheeger_constant, 0);
 }
 
 #define TEST_LIST(F)                                                           \
@@ -96,6 +136,10 @@ static void TestComputeExactCheegerConstant_K9_WithSelfLoops() {
   F(TestComputeExactCheegerConstant_K20)                                       \
   F(TestComputeExactCheegerConstant_K20_WithSelfLoops)                         \
   F(TestComputeExactCheegerConstant_K9)                                        \
-  F(TestComputeExactCheegerConstant_K9_WithSelfLoops)
+  F(TestComputeExactCheegerConstant_K9_WithSelfLoops)                          \
+  F(TestComputeExactCheegerConstant_RandomGraph_9_3)                           \
+  F(TestComputeExactCheegerConstant_RandomGraph_10_4)                          \
+  F(TestComputeExactCheegerConstant_RandomGraph_15_3)                          \
+  F(TestComputeExactCheegerConstant_K10_Disconnected)
 
 DEFINE_MAIN(TEST_LIST)

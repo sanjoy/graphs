@@ -14,14 +14,16 @@ cc_library(
     name = "analyses",
     srcs = ["analyses.cpp"],
     hdrs = ["analyses.hpp"],
-    deps = [":graph", ":random"]
+    deps = [":graph", ":random", ":logging"]
 )
 
 cc_library(
     name = "random_graph",
     srcs = ["random_graph.cpp"],
     hdrs = ["random_graph.hpp"],
-    deps = [":graph", ":random"]
+    deps = [":graph", ":random", ":logging"]
+)
+
 cc_library(
     name = "logging",
     srcs = ["logging.cpp"],
@@ -32,6 +34,7 @@ cc_library(
     name = "test",
     srcs = ["test.cpp"],
     hdrs = ["test.hpp"],
+    deps = [":logging"],
     testonly = True,
 )
 
@@ -44,7 +47,7 @@ cc_test(
 cc_test(
     name = "analyses_test",
     srcs = ["analyses_test.cpp"],
-    deps = [":analyses", ":test"]
+    deps = [":analyses", ":random_graph", ":test"]
 )
 
 cc_test(

@@ -1,5 +1,7 @@
 #include "analyses.hpp"
 
+#include "logging.hpp"
+
 #include <limits>
 #include <vector>
 
@@ -94,6 +96,21 @@ static int IntegerToBits(unsigned long input, std::vector<bool> *output) {
   return set_bits;
 }
 
+std::ostream &operator<<(std::ostream &os, const std::vector<bool> &node_set) {
+  os << "{";
+  bool first = true;
+  for (int i = 0, e = node_set.size(); i != e; i++) {
+    if (node_set[i]) {
+      if (!first)
+        os << ", ";
+      first = false;
+      os << i;
+    }
+  }
+  os << "}";
+  return os;
+}
+
 std::optional<double> ComputeExactCheegerConstant(Graph *g) {
   Graph::NodeCountType node_count;
   if (!IsFinite(g, &node_count))
@@ -104,17 +121,38 @@ std::optional<double> ComputeExactCheegerConstant(Graph *g) {
     return std::nullopt;
 
   double upper_bound = std::numeric_limits<double>::infinity();
+  Graph::NodeCountType selected_node_count_for_min = -1;
+  Graph::NodeCountType boundary_nodes_for_min = -1;
 
-  int total_combinations = 1u << (node_count - 1);
+  int total_combinations = 1u << node_count;
   std::vector<bool> selected_nodes(node_count);
 
-  for (unsigned i = 0; i != total_combinations; i++) {
-    int selected_node_count = IntegerToBits(i, &selected_nodes);
+  LOG_VAR(node_count);
+
+  for (unsigned i = 1; i != total_combinations; i++) {
+    Graph::NodeCountType selected_node_count =
+        IntegerToBits(i, &selected_nodes);
+    if (selected_node_count > node_count / 2)
+      continue;
+
     Graph::NodeCountType boundary_nodes = FindBoundaryNodes(g, selected_nodes);
     double this_upper_bound = static_cast<double>(boundary_nodes) /
                               static_cast<double>(selected_node_count);
+
+    LOG_VAR(selected_node_count);
+    LOG_VAR(selected_nodes);
+    LOG_VAR(boundary_nodes);
+
+    if (this_upper_bound < upper_bound) {
+      upper_bound = this_upper_bound;
+      selected_node_count_for_min = selected_node_count;
+      boundary_nodes_for_min = boundary_nodes;
+    }
     upper_bound = std::min(upper_bound, this_upper_bound);
   }
+
+  LOG_VAR(selected_node_count_for_min);
+  LOG_VAR(boundary_nodes_for_min);
 
   return upper_bound;
 }
