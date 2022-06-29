@@ -46,17 +46,24 @@ void ParseCmdOptions(int argc, char **argv, TestOptions *out);
     }                                                                          \
   } while (0)
 
-#define CHECK_EQ(a, b)                                                         \
+#define __CHECK_RELATION(a, b, operator, operator_str)                         \
   do {                                                                         \
     auto __a = (a);                                                            \
     auto __b = (b);                                                            \
-    if (__a != __b) {                                                          \
-      ::graph::detail::AssertFailed(#a " != " #b, __FILE__, __LINE__);         \
+    if (__a operator __b) {                                                    \
+      ::graph::detail::AssertFailed(#a " " operator_str " " #b, __FILE__,      \
+                                    __LINE__);                                 \
       std::cerr << #a << " = " << __a << std::endl;                            \
       std::cerr << #b << " = " << __b << std::endl;                            \
       return;                                                                  \
     }                                                                          \
   } while (0)
+
+#define CHECK_EQ(a, b) __CHECK_RELATION(a, b, !=, "!=")
+#define CHECK_LT(a, b) __CHECK_RELATION(a, b, >=, ">=")
+#define CHECK_LE(a, b) __CHECK_RELATION(a, b, >, ">")
+#define CHECK_GT(a, b) __CHECK_RELATION(a, b, <=, "<=")
+#define CHECK_GE(a, b) __CHECK_RELATION(a, b, <, "<")
 
 #define __IMPL__RUN_TEST(fn)                                                   \
   do {                                                                         \
