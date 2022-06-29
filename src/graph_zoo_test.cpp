@@ -46,8 +46,6 @@ static void TestCreateCompleteGraph_WithSelfLoops() {
   CHECK_EQ(edges.size(), 55);
 }
 
-// TODO with self loops
-
 static void TestUnconnectedGraph() {
   auto graph = CreateUnconnectedGraph(10);
   Graph::NodeCountType node_count;
@@ -156,8 +154,6 @@ static void TestCreateCompleteBipartiteGraph_5_1() {
     CHECK_LT(e.second, 5);
   }
 }
-
-// TODO: K(0, N), K(1, N), K(N, 0), K(N, 1)
 
 #define TEST_LIST(F)                                                           \
   F(TestCreateCompleteGraph_NoSelfLoops)                                       \
