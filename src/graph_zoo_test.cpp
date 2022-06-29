@@ -128,13 +128,17 @@ static void TestCreateCompleteBipartiteGraph_1_5() {
   CHECK(IsFinite(graph.get(), &node_count));
   CHECK_EQ(node_count, 6);
 
+  std::set<Graph::EdgeType> edges;
   for (auto e : Iterate(graph->GetEdges())) {
     if (e.second == 0)
       std::swap(e.first, e.second);
 
     CHECK_GE(e.second, 1);
     CHECK_LT(e.second, 6);
+    CHECK(edges.insert(e).second);
   }
+
+  CHECK_EQ(edges.size(), 5);
 }
 
 static void TestCreateCompleteBipartiteGraph_5_1() {
@@ -146,13 +150,17 @@ static void TestCreateCompleteBipartiteGraph_5_1() {
   CHECK(IsFinite(graph.get(), &node_count));
   CHECK_EQ(node_count, 6);
 
+  std::set<Graph::EdgeType> edges;
   for (auto e : Iterate(graph->GetEdges())) {
     if (e.second == 5)
       std::swap(e.first, e.second);
 
     CHECK_GE(e.second, 0);
     CHECK_LT(e.second, 5);
+    CHECK(edges.insert(e).second);
   }
+
+  CHECK_EQ(edges.size(), 5);
 }
 
 #define TEST_LIST(F)                                                           \
