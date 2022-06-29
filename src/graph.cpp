@@ -25,26 +25,10 @@ private:
   Graph::NodeCountType i_ = 0;
   const Graph::NodeCountType num_nodes_;
 };
-
-class InfiniteNodeIterator : public Graph::NodeIterator {
-public:
-  InfiniteNodeIterator() {}
-
-  Graph::NodeType Get() override { return i_; }
-
-  void Next() override { i_++; }
-
-  bool IsAtEnd() override { return false; }
-
-private:
-  Graph::NodeCountType i_ = 0;
-};
 } // namespace
 
 std::unique_ptr<Graph::NodeIterator> Graph::GetNodes() {
-  if (auto node_count = GetNodeCountIfFinite())
-    return std::make_unique<FiniteNodeIterator>(*node_count);
-  return std::make_unique<InfiniteNodeIterator>();
+  return std::make_unique<FiniteNodeIterator>(GetNodeCount());
 }
 
 namespace {
@@ -94,9 +78,7 @@ public:
     return std::make_unique<EdgeIterator>(single_edges_);
   }
 
-  std::optional<NodeCountType> GetNodeCountIfFinite() override {
-    return num_nodes_;
-  }
+  NodeCountType GetNodeCount() override { return num_nodes_; }
 
   std::unique_ptr<Graph::EdgeIterator>
   GetEdgesWithNode(Graph::NodeType n) override {

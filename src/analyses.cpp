@@ -6,10 +6,7 @@
 #include <vector>
 
 namespace graph {
-std::optional<Graph::NodeCountType> ComputeMinDegree(Graph *g) {
-  if (!IsFinite(g))
-    return std::nullopt;
-
+Graph::NodeCountType ComputeMinDegree(Graph *g) {
   Graph::NodeCountType min_degree =
       std::numeric_limits<Graph::NodeCountType>::max();
   for (auto node : Iterate(g->GetNodes())) {
@@ -59,9 +56,8 @@ static Graph::NodeCountType FindBoundaryNodes(Graph *g,
 
 double DO_NOT_USE_ComputeCheegerConstantUpperBound(
     Graph *g, RandomBitGenerator *generator, int num_iters) {
-  Graph::NodeCountType node_count;
-  if (!IsFinite(g, &node_count))
-    return false;
+  Graph::NodeCountType node_count = g->GetNodeCount();
+  ;
 
   double upper_bound = std::numeric_limits<double>::infinity();
 
@@ -114,14 +110,8 @@ std::ostream &operator<<(std::ostream &os, const std::vector<bool> &node_set) {
   return os;
 }
 
-std::optional<double> ComputeExactCheegerConstant(Graph *g) {
-  Graph::NodeCountType node_count;
-  if (!IsFinite(g, &node_count))
-    return std::nullopt;
-
-  int kMaxNodeCount = 24;
-  if (node_count > kMaxNodeCount)
-    return std::nullopt;
+double ComputeExactCheegerConstant(Graph *g) {
+  Graph::NodeCountType node_count = g->GetNodeCount();
 
   double upper_bound = std::numeric_limits<double>::infinity();
   Graph::NodeCountType selected_node_count_for_min = -1;

@@ -8,10 +8,9 @@ using namespace graph;
 
 static void TestCreateCompleteGraph_NoSelfLoops() {
   auto graph = CreateCompleteGraph(10, /*self_loops=*/false);
-  Graph::NodeCountType node_count;
+  Graph::NodeCountType node_count = graph->GetNodeCount();
 
   CHECK(!CheckConsistency(graph.get()).has_value())
-  CHECK(IsFinite(graph.get(), &node_count));
   CHECK_EQ(node_count, 10);
 
   std::set<Graph::EdgeType> edges;
@@ -28,10 +27,9 @@ static void TestCreateCompleteGraph_NoSelfLoops() {
 
 static void TestCreateCompleteGraph_WithSelfLoops() {
   auto graph = CreateCompleteGraph(10, /*self_loops=*/true);
-  Graph::NodeCountType node_count;
+  Graph::NodeCountType node_count = graph->GetNodeCount();
 
   CHECK(!CheckConsistency(graph.get()).has_value())
-  CHECK(IsFinite(graph.get(), &node_count));
   CHECK_EQ(node_count, 10);
 
   std::set<Graph::EdgeType> edges;
@@ -48,11 +46,10 @@ static void TestCreateCompleteGraph_WithSelfLoops() {
 
 static void TestUnconnectedGraph() {
   auto graph = CreateUnconnectedGraph(10);
-  Graph::NodeCountType node_count;
+  Graph::NodeCountType node_count = graph->GetNodeCount();
 
   CHECK(!CheckConsistency(graph.get()).has_value())
 
-  CHECK(IsFinite(graph.get(), &node_count));
   CHECK_EQ(node_count, 10);
 
   for (auto e : Iterate(graph->GetEdges())) {
@@ -63,11 +60,10 @@ static void TestUnconnectedGraph() {
 
 static void TestCreateCompleteBipartiteGraph_2_5() {
   auto graph = CreateCompleteBipartiteGraph(2, 5);
-  Graph::NodeCountType node_count;
+  Graph::NodeCountType node_count = graph->GetNodeCount();
 
   CHECK(!CheckConsistency(graph.get()).has_value())
 
-  CHECK(IsFinite(graph.get(), &node_count));
   CHECK_EQ(node_count, 7);
 
   std::set<Graph::EdgeType> edges;
@@ -91,11 +87,10 @@ static void TestCreateCompleteBipartiteGraph_2_5() {
 
 static void TestCreateCompleteBipartiteGraph_0_5() {
   auto graph = CreateCompleteBipartiteGraph(0, 5);
-  Graph::NodeCountType node_count;
+  Graph::NodeCountType node_count = graph->GetNodeCount();
 
   CHECK(!CheckConsistency(graph.get()).has_value())
 
-  CHECK(IsFinite(graph.get(), &node_count));
   CHECK_EQ(node_count, 5);
 
   for (auto e : Iterate(graph->GetEdges())) {
@@ -106,11 +101,10 @@ static void TestCreateCompleteBipartiteGraph_0_5() {
 
 static void TestCreateCompleteBipartiteGraph_5_0() {
   auto graph = CreateCompleteBipartiteGraph(5, 0);
-  Graph::NodeCountType node_count;
+  Graph::NodeCountType node_count = graph->GetNodeCount();
 
   CHECK(!CheckConsistency(graph.get()).has_value())
 
-  CHECK(IsFinite(graph.get(), &node_count));
   CHECK_EQ(node_count, 5);
 
   for (auto e : Iterate(graph->GetEdges())) {
@@ -121,11 +115,10 @@ static void TestCreateCompleteBipartiteGraph_5_0() {
 
 static void TestCreateCompleteBipartiteGraph_1_5() {
   auto graph = CreateCompleteBipartiteGraph(1, 5);
-  Graph::NodeCountType node_count;
+  Graph::NodeCountType node_count = graph->GetNodeCount();
 
   CHECK(!CheckConsistency(graph.get()).has_value())
 
-  CHECK(IsFinite(graph.get(), &node_count));
   CHECK_EQ(node_count, 6);
 
   std::set<Graph::EdgeType> edges;
@@ -143,11 +136,10 @@ static void TestCreateCompleteBipartiteGraph_1_5() {
 
 static void TestCreateCompleteBipartiteGraph_5_1() {
   auto graph = CreateCompleteBipartiteGraph(5, 1);
-  Graph::NodeCountType node_count;
+  Graph::NodeCountType node_count = graph->GetNodeCount();
 
   CHECK(!CheckConsistency(graph.get()).has_value())
 
-  CHECK(IsFinite(graph.get(), &node_count));
   CHECK_EQ(node_count, 6);
 
   std::set<Graph::EdgeType> edges;
