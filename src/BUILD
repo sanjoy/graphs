@@ -38,6 +38,19 @@ cc_library(
 )
 
 cc_library(
+    name = "graph_viz",
+    srcs = ["graph_viz.cpp"],
+    hdrs = ["graph_viz.hpp"],
+    deps = [":graph"]
+)
+
+cc_binary(
+    name = "graph_viz_driver",
+    srcs = ["graph_viz_driver.cpp"],
+    deps = [":graph_viz", ":graph_zoo"]
+)
+
+cc_library(
     name = "test",
     srcs = ["test.cpp"],
     hdrs = ["test.hpp"],
@@ -73,4 +86,10 @@ cc_test(
     name = "graph_zoo_test",
     srcs = ["graph_zoo_test.cpp"],
     deps = [":graph_zoo", ":test"]
+)
+
+cc_test(
+    name = "graph_viz_test",
+    srcs = ["graph_viz_test.cpp"],
+    deps = [":graph_viz", ":test", ":graph_zoo"]
 )
