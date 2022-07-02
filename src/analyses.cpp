@@ -6,20 +6,25 @@
 #include <vector>
 
 namespace graph {
-Graph::NodeCountType ComputeMinDegree(Graph *g) {
-  Graph::NodeCountType min_degree =
-      std::numeric_limits<Graph::NodeCountType>::max();
+std::optional<Graph::NodeCountType> IsRegular(Graph *g) {
+  std::optional<Graph::NodeCountType> degree;
   for (auto node : Iterate(g->GetNodes())) {
-    Graph::NodeCountType degree = 0;
+    Graph::NodeCountType this_degree = 0;
     for (auto edge : Iterate(g->GetEdgesWithNode(node))) {
       (void)edge;
-      degree++;
+      this_degree++;
     }
-    if (degree < min_degree)
-      min_degree = degree;
+
+    if (!degree) {
+      degree = this_degree;
+      continue;
+    }
+
+    if (*degree != this_degree)
+      return std::nullopt;
   }
 
-  return min_degree;
+  return degree.value_or(0);
 }
 
 static Graph::NodeCountType PickRandomSubset(RandomBitGenerator *generator,

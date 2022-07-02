@@ -7,31 +7,44 @@
 
 using namespace graph;
 
-static void TestComputeMinDegree_CompleteGraph() {
+static void TestIsRegular_CompleteGraph() {
   std::vector<Graph::EdgeType> edges = {
       {0, 1},
       {0, 2},
       {1, 2},
   };
   std::unique_ptr<Graph> graph = CreateConcreteGraph(3, edges);
-  auto min_degree = ComputeMinDegree(graph.get());
-  CHECK_EQ(min_degree, 2);
+  auto degree = IsRegular(graph.get());
+  CHECK(degree.has_value());
+  CHECK_EQ(*degree, 2);
 }
 
-static void TestComputeMinDegree_NullGraph() {
+static void TestIsRegular_NullGraph() {
   std::vector<Graph::EdgeType> edges = {};
   std::unique_ptr<Graph> graph = CreateConcreteGraph(3, edges);
-  auto min_degree = ComputeMinDegree(graph.get());
-  CHECK_EQ(min_degree, 0);
+  auto degree = IsRegular(graph.get());
+  CHECK(degree.has_value());
+  CHECK_EQ(*degree, 0);
 }
 
-static void TestComputeMinDegree_CompleteGraphWithSelfLoops() {
+static void TestIsRegular_CompleteGraphWithSelfLoops() {
   std::vector<Graph::EdgeType> edges = {
       {0, 0}, {1, 1}, {2, 2}, {0, 1}, {0, 2}, {1, 2},
   };
   std::unique_ptr<Graph> graph = CreateConcreteGraph(3, edges);
-  auto min_degree = ComputeMinDegree(graph.get());
-  CHECK_EQ(min_degree, 3);
+  auto degree = IsRegular(graph.get());
+  CHECK(degree.has_value());
+  CHECK_EQ(*degree, 3);
+}
+
+static void TestIsRegular_IrregularGraph() {
+  std::vector<Graph::EdgeType> edges = {
+      {0, 1},
+      {1, 2},
+  };
+  std::unique_ptr<Graph> graph = CreateConcreteGraph(3, edges);
+  auto degree = IsRegular(graph.get());
+  CHECK(!degree.has_value());
 }
 
 static void TestComputeExactCheegerConstant_Ring4() {
@@ -151,9 +164,10 @@ static void TestComputeExactCheegerConstant_AlmostK10() {
 }
 
 #define TEST_LIST(F)                                                           \
-  F(TestComputeMinDegree_CompleteGraph)                                        \
-  F(TestComputeMinDegree_NullGraph)                                            \
-  F(TestComputeMinDegree_CompleteGraphWithSelfLoops)                           \
+  F(TestIsRegular_CompleteGraph)                                               \
+  F(TestIsRegular_NullGraph)                                                   \
+  F(TestIsRegular_CompleteGraphWithSelfLoops)                                  \
+  F(TestIsRegular_IrregularGraph)                                              \
   F(TestComputeExactCheegerConstant_Ring4)                                     \
   F(TestComputeExactCheegerConstant_K20)                                       \
   F(TestComputeExactCheegerConstant_K20_WithSelfLoops)                         \
