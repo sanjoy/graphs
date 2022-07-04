@@ -91,8 +91,6 @@ std::unique_ptr<Graph::EdgeIterator> Graph::GetEdges() {
   return std::make_unique<FiniteGraphEdgeIterator>(this);
 }
 
-std::optional<std::string> Graph::CheckConsistency() { return std::nullopt; }
-
 namespace {
 class ConcreteGraph final : public Graph {
 public:
@@ -143,10 +141,6 @@ public:
         std::span<Graph::EdgeTy>(edges_).subspan(offset, size));
   }
 
-  std::optional<std::string> CheckConsistency() override {
-    return std::nullopt;
-  }
-
   std::unique_ptr<Graph> Clone() override {
     return std::make_unique<ConcreteGraph>(num_vertices_, edges_);
   }
@@ -168,9 +162,6 @@ std::unique_ptr<Graph> CreateConcreteGraph(Graph::OrderTy num_vertices,
 }
 
 std::optional<std::string> CheckConsistency(Graph *g) {
-  if (auto r = g->CheckConsistency())
-    return r;
-
   std::set<Graph::EdgeTy> double_edges;
   for (Graph::EdgeTy e : Iterate(g->GetEdges())) {
     double_edges.insert(e);

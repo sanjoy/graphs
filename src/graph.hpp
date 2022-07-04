@@ -39,8 +39,6 @@ public:
 
   virtual OrderTy GetOrder() = 0;
 
-  virtual std::optional<std::string> CheckConsistency();
-
   virtual std::unique_ptr<Graph> Clone() = 0;
 };
 
