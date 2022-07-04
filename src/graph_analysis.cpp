@@ -1,4 +1,4 @@
-#include "analyses.hpp"
+#include "graph_analysis.hpp"
 
 #include "logging.hpp"
 

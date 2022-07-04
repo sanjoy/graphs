@@ -1,4 +1,4 @@
-#include "analyses.hpp"
+#include "graph_analysis.hpp"
 #include "graph_viz.hpp"
 #include "graph_zoo.hpp"
 

@@ -1,6 +1,6 @@
 #include "graph_zoo.hpp"
 
-#include "analyses.hpp"
+#include "graph_analysis.hpp"
 #include "logging.hpp"
 
 #include <vector>

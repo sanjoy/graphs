@@ -1,4 +1,4 @@
-#include "analyses.hpp"
+#include "graph_analysis.hpp"
 #include "random.hpp"
 #include "random_graph.hpp"
 #include "test.hpp"
