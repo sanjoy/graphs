@@ -147,6 +147,10 @@ public:
     return std::nullopt;
   }
 
+  std::unique_ptr<Graph> Clone() override {
+    return std::make_unique<ConcreteGraph>(num_vertices_, edges_);
+  }
+
 private:
   Graph::OrderTy num_vertices_;
   std::vector<Graph::EdgeTy> edges_;

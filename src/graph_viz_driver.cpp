@@ -1,3 +1,4 @@
+#include "analyses.hpp"
 #include "graph_viz.hpp"
 #include "graph_zoo.hpp"
 
@@ -114,6 +115,43 @@ public:
     return CreateCompleteBipartiteGraph(*maybe_l, *maybe_r);
   }
 
+  GraphResult
+  MakeReplacementProductGraph(const std::string &cmd,
+                              const std::vector<std::string> &cmd_words,
+                              bool *matched) {
+    *matched = cmd_words[kAssignOpOffset + 1] == "replacement_product";
+    if (!*matched)
+      return std::unique_ptr<Graph>(nullptr);
+
+    if (cmd_words.size() != kAssignOpOffset + 4)
+      return "Expected command of the form \"x = replacement_product <outer "
+             "graph> <inner graph>\", got \"" +
+             cmd + "\"";
+
+    const std::string &outer_graph_name = cmd_words[kAssignOpOffset + 2];
+    auto outer_graph_it = graphs_.find(outer_graph_name);
+    if (outer_graph_it == graphs_.end())
+      return "Could not find outer graph " + outer_graph_name;
+    std::unique_ptr<Graph> outer_graph = outer_graph_it->second->Clone();
+    auto outer_graph_degree = IsRegular(outer_graph.get());
+    if (!outer_graph_degree.has_value())
+      return "Outer graph " + outer_graph_name + " is not regular";
+
+    const std::string &inner_graph_name = cmd_words[kAssignOpOffset + 3];
+    auto inner_graph_it = graphs_.find(inner_graph_name);
+    if (inner_graph_it == graphs_.end())
+      return "Could not find inner graph " + inner_graph_name;
+    std::unique_ptr<Graph> inner_graph = inner_graph_it->second->Clone();
+
+    if (*outer_graph_degree != inner_graph->GetOrder())
+      return "Outer graph degree " + std::to_string(*outer_graph_degree) +
+             " does not match inner graph order " +
+             std::to_string(inner_graph->GetOrder());
+
+    return CreateReplacementProduct(std::move(outer_graph),
+                                    std::move(inner_graph));
+  }
+
   GraphResult MakeGraph(const std::string &cmd,
                         const std::vector<std::string> &cmd_words) {
     GraphResult result;
@@ -129,6 +167,7 @@ public:
     MAKE_GRAPH_CASE(Complete);
     MAKE_GRAPH_CASE(Unconnected);
     MAKE_GRAPH_CASE(Bipartite);
+    MAKE_GRAPH_CASE(ReplacementProduct);
 
 #undef MAKE_GRAPH_CASE
 

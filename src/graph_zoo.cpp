@@ -149,6 +149,11 @@ public:
   Graph *GetOuter() { return outer_.get(); }
   Graph *GetInner() { return inner_.get(); }
 
+  std::unique_ptr<Graph> Clone() override {
+    return std::make_unique<ReplacementProduct>(outer_->Clone(),
+                                                inner_->Clone());
+  }
+
 private:
   std::unique_ptr<Graph> outer_;
   std::unique_ptr<Graph> inner_;
