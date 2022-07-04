@@ -1,6 +1,6 @@
 #include "logging.hpp"
 
-namespace graph {
+namespace kb {
 static thread_local bool LoggingFlag = false;
 
 void EnableLogging() { LoggingFlag = true; }
@@ -43,4 +43,4 @@ LogMethodEntryAndExit::~LogMethodEntryAndExit() {
     LOG << "Exiting " << method_ << "\n";
 }
 } // namespace detail
-} // namespace graph
+} // namespace kb

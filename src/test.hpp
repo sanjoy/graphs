@@ -7,7 +7,7 @@
 #include <string>
 #include <vector>
 
-namespace graph {
+namespace kb {
 namespace detail {
 void AssertFailed(const char *msg, const char *file, int line);
 bool AnyAssertFailed();
@@ -22,11 +22,11 @@ struct TestOptions {
 
 void ParseCmdOptions(int argc, char **argv, TestOptions *out);
 } // namespace detail
-} // namespace graph
+} // namespace kb
 
 #define CHECK(cond)                                                            \
   if (!(cond)) {                                                               \
-    ::graph::detail::AssertFailed(#cond, __FILE__, __LINE__);                  \
+    ::kb::detail::AssertFailed(#cond, __FILE__, __LINE__);                     \
     return;                                                                    \
   }
 
@@ -52,8 +52,8 @@ void ParseCmdOptions(int argc, char **argv, TestOptions *out);
     auto __a = (a);                                                            \
     auto __b = (b);                                                            \
     if (__a operator __b) {                                                    \
-      ::graph::detail::AssertFailed(#a " " operator_str " " #b, __FILE__,      \
-                                    __LINE__);                                 \
+      ::kb::detail::AssertFailed(#a " " operator_str " " #b, __FILE__,         \
+                                 __LINE__);                                    \
       std::cerr << #a << " = " << __a << std::endl;                            \
       std::cerr << #b << " = " << __b << std::endl;                            \
       return;                                                                  \
@@ -66,19 +66,19 @@ void ParseCmdOptions(int argc, char **argv, TestOptions *out);
 #define CHECK_GT(a, b) __CHECK_RELATION(a, b, <=, "<=")
 #define CHECK_GE(a, b) __CHECK_RELATION(a, b, <, "<")
 
-namespace graph {
+namespace kb {
 namespace detail {
 void CanonicalizeEdgeList(std::vector<Graph::EdgeTy> *edges);
 }
-} // namespace graph
+} // namespace kb
 
 #define CHECK_EDGES_EQ(expected_edges, input_graph)                            \
   do {                                                                         \
-    std::vector<::graph::Graph::EdgeTy> __actual_edges;                        \
+    std::vector<::kb::Graph::EdgeTy> __actual_edges;                           \
     for (auto e : Iterate((input_graph)->GetEdges()))                          \
       __actual_edges.push_back(e);                                             \
-    ::graph::detail::CanonicalizeEdgeList(&__actual_edges);                    \
-    ::graph::detail::CanonicalizeEdgeList(&expected_edges);                    \
+    ::kb::detail::CanonicalizeEdgeList(&__actual_edges);                       \
+    ::kb::detail::CanonicalizeEdgeList(&expected_edges);                       \
     CHECK_EQ(__actual_edges.size(), expected_edges.size());                    \
     for (int i = 0, e = __actual_edges.size(); i != e; i++)                    \
       CHECK_EQ(__actual_edges[i], expected_edges[i]);                          \
@@ -88,23 +88,23 @@ void CanonicalizeEdgeList(std::vector<Graph::EdgeTy> *edges);
   do {                                                                         \
     if (opts.test_filter.empty() || #fn == opts.test_filter) {                 \
       if (#fn == opts.enable_logging_for_test || opts.enable_logging)          \
-        ::graph::EnableLogging();                                              \
-      ::graph::detail::ClearAssertFailed();                                    \
+        ::kb::EnableLogging();                                                 \
+      ::kb::detail::ClearAssertFailed();                                       \
       if (!opts.quiet_mode)                                                    \
         std::cout << "Running " << #fn << std::endl;                           \
       fn();                                                                    \
-      if (::graph::detail::AnyAssertFailed()) {                                \
+      if (::kb::detail::AnyAssertFailed()) {                                   \
         std::cout << "Failed " << #fn << std::endl;                            \
         failed_tests.push_back(#fn);                                           \
       } else if (!opts.quiet_mode)                                             \
         std::cout << "Passed " << #fn << std::endl;                            \
-      ::graph::DisableLogging();                                               \
+      ::kb::DisableLogging();                                                  \
     }                                                                          \
   } while (0);
 
 #define RUN_MAIN(TEST_LIST)                                                    \
   do {                                                                         \
-    ::graph::detail::TestOptions opts;                                         \
+    ::kb::detail::TestOptions opts;                                            \
     ParseCmdOptions(argc, argv, &opts);                                        \
     std::cerr.precision(std::numeric_limits<double>::max_digits10);            \
     std::vector<std::string> failed_tests;                                     \

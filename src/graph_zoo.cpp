@@ -5,7 +5,7 @@
 
 #include <vector>
 
-namespace graph {
+namespace kb {
 std::unique_ptr<Graph> CreateCompleteGraph(int k, bool self_loops) {
   std::vector<Graph::EdgeTy> edges;
   for (int i = 0; i < k; i++) {
@@ -167,4 +167,4 @@ std::unique_ptr<Graph> CreateRingGraph(int v) {
 
   return CreateConcreteGraph(v, edges);
 }
-} // namespace graph
+} // namespace kb

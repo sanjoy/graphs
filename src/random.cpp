@@ -2,7 +2,7 @@
 
 #include <random>
 
-namespace graph {
+namespace kb {
 namespace {
 class DefaultRandomBitGenerator final : public RandomBitGenerator {
 public:
@@ -49,4 +49,4 @@ unsigned long GenerateRandomInteger(RandomBitGenerator *gen,
                                     unsigned long upper_bound) {
   return FastDiceRoller(gen, upper_bound);
 }
-} // namespace graph
+} // namespace kb

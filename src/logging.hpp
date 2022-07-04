@@ -2,7 +2,7 @@
 
 #include <iostream>
 
-namespace graph {
+namespace kb {
 void EnableLogging();
 void DisableLogging();
 bool IsLoggingEnabled();
@@ -33,7 +33,7 @@ private:
 
 #define __LOG_PREFIX                                                           \
   "[" << __FILE__ << ":" << __LINE__ << "] "                                   \
-      << ::graph::detail::LogMethodEntryAndExit::GetNestingIndentation()
+      << ::kb::detail::LogMethodEntryAndExit::GetNestingIndentation()
 
 #define LOG                                                                    \
   if (IsLoggingEnabled())                                                      \
@@ -54,8 +54,8 @@ private:
   } while (0)
 
 #define LOG_METHOD_ENTRY_AND_EXIT()                                            \
-  ::graph::detail::LogMethodEntryAndExit __log_entry_and_exit {                \
+  ::kb::detail::LogMethodEntryAndExit __log_entry_and_exit {                   \
     IsLoggingEnabled(), __PRETTY_FUNCTION__                                    \
   }
 
-} // namespace graph
+} // namespace kb

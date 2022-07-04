@@ -5,7 +5,7 @@
 
 #include <vector>
 
-using namespace graph;
+using namespace kb;
 
 static void TestIsRegular_CompleteGraph() {
   std::vector<Graph::EdgeTy> edges = {

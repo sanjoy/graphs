@@ -5,7 +5,7 @@
 
 #include <set>
 
-using namespace graph;
+using namespace kb;
 
 static void TestCreateCompleteGraph_NoSelfLoops() {
   auto graph = CreateCompleteGraph(10, /*self_loops=*/false);

@@ -3,7 +3,7 @@
 
 #include <vector>
 
-using namespace graph;
+using namespace kb;
 
 static std::vector<unsigned long>
 GenerateRandomIntHistogram(unsigned long range, unsigned long count) {

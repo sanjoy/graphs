@@ -3,7 +3,7 @@
 #include "graph_zoo.hpp"
 #include "test.hpp"
 
-using namespace graph;
+using namespace kb;
 
 static void TestExportToGraphviz_CompleteGraph_NoSelfLoops() {
   auto complete_graph = CreateCompleteGraph(3, /*self_loops=*/false);

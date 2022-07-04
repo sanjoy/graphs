@@ -5,7 +5,7 @@
 #include <limits>
 #include <vector>
 
-namespace graph {
+namespace kb {
 std::optional<Graph::OrderTy> IsRegular(Graph *g) {
   std::optional<Graph::OrderTy> degree;
   for (auto vertex : Iterate(g->GetVertices())) {
@@ -160,4 +160,4 @@ double ComputeExactCheegerConstant(Graph *g) {
 
   return upper_bound;
 }
-} // namespace graph
+} // namespace kb

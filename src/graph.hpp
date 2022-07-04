@@ -5,7 +5,7 @@
 #include <span>
 #include <utility>
 
-namespace graph {
+namespace kb {
 class Graph {
 public:
   using VertexTy = unsigned long;
@@ -93,4 +93,4 @@ std::unique_ptr<Graph> CreateConcreteGraph(Graph::OrderTy num_vertices,
 std::optional<std::string> CheckConsistency(Graph *g);
 
 std::ostream &operator<<(std::ostream &, const Graph::EdgeTy &);
-} // namespace graph
+} // namespace kb

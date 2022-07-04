@@ -10,7 +10,7 @@
 #include <variant>
 #include <vector>
 
-namespace graph {
+namespace kb {
 namespace {
 void ltrim(std::string *s) {
   s->erase(s->begin(), std::find_if(s->begin(), s->end(), [](unsigned char ch) {
@@ -218,6 +218,6 @@ void RealMain() {
   } while (!exit);
 }
 } // namespace
-} // namespace graph
+} // namespace kb
 
-int main() { graph::RealMain(); }
+int main() { kb::RealMain(); }

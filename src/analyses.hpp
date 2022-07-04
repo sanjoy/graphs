@@ -3,7 +3,7 @@
 #include "graph.hpp"
 #include "random.hpp"
 
-namespace graph {
+namespace kb {
 std::optional<Graph::OrderTy> IsRegular(Graph *g);
 
 // Unclear how to get good probabilistic bounds on the cheeger constant.
@@ -12,4 +12,4 @@ double DO_NOT_USE_ComputeCheegerConstantUpperBound(
 
 // Runs in exponential time.
 double ComputeExactCheegerConstant(Graph *g);
-} // namespace graph
+} // namespace kb

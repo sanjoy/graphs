@@ -8,7 +8,7 @@
 #include <string>
 #include <vector>
 
-namespace graph {
+namespace kb {
 namespace {
 class FiniteVertexIterator : public Graph::VertexIterator {
 public:
@@ -211,4 +211,4 @@ std::ostream &operator<<(std::ostream &os, const Graph::EdgeTy &e) {
   os << "(" << e.first << ", " << e.second << ")";
   return os;
 }
-} // namespace graph
+} // namespace kb

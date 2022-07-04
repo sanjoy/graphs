@@ -4,7 +4,7 @@
 #include <iostream>
 #include <vector>
 
-using namespace graph;
+using namespace kb;
 
 static void TestIterators_0() {
   std::vector<Graph::EdgeTy> edges = {

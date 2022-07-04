@@ -5,7 +5,7 @@
 
 #include <vector>
 
-namespace graph {
+namespace kb {
 std::unique_ptr<Graph> CreateRandomSparseGraph(RandomBitGenerator *gen,
                                                Graph::OrderTy num_vertices,
                                                Graph::OrderTy average_degree,
@@ -34,4 +34,4 @@ std::unique_ptr<Graph> CreateRandomSparseGraph(RandomBitGenerator *gen,
 
   return CreateConcreteGraph(num_vertices, edges);
 }
-} // namespace graph
+} // namespace kb

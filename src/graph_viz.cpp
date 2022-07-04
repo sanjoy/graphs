@@ -5,7 +5,7 @@
 #include <set>
 #include <sstream>
 
-namespace graph {
+namespace kb {
 std::string ExportToGraphviz(Graph *g, std::string name) {
   std::stringstream out;
 
@@ -52,4 +52,4 @@ bool CreatePngViaGraphviz(Graph *g, std::string filename_base, bool open) {
 
   return true;
 }
-} // namespace graph
+} // namespace kb

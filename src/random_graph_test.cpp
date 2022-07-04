@@ -2,7 +2,7 @@
 #include "random_graph.hpp"
 #include "test.hpp"
 
-using namespace graph;
+using namespace kb;
 
 static void TestCreateRandomSparseGraph_10_3() {
   std::unique_ptr<RandomBitGenerator> rbg = CreateDefaultRandomBitGenerator();

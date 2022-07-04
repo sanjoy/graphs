@@ -2,7 +2,7 @@
 
 #include <iostream>
 
-namespace graph {
+namespace kb {
 namespace detail {
 static bool AnyAssertFailedFlag = false;
 
@@ -67,4 +67,4 @@ void CanonicalizeEdgeList(std::vector<Graph::EdgeTy> *edges) {
             });
 }
 } // namespace detail
-} // namespace graph
+} // namespace kb
