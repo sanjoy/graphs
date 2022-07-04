@@ -178,6 +178,7 @@ static void TestComputeExactCheegerConstant_AlmostK10() {
   F(TestComputeExactCheegerConstant_RandomGraph_15_3)                          \
   F(TestComputeExactCheegerConstant_K10_Disconnected_1)                        \
   F(TestComputeExactCheegerConstant_K10_Disconnected_2)                        \
-  F(TestComputeExactCheegerConstant_AlmostK10)
+  F(TestComputeExactCheegerConstant_AlmostK10)                                 \
+  (void)0;
 
 DEFINE_MAIN(TEST_LIST)

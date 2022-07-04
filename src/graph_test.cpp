@@ -35,6 +35,7 @@ static void TestIterators_2() {
 #define TEST_LIST(F)                                                           \
   F(TestIterators_0)                                                           \
   F(TestIterators_1)                                                           \
-  F(TestIterators_2)
+  F(TestIterators_2)                                                           \
+  (void)0;
 
 DEFINE_MAIN(TEST_LIST)

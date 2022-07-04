@@ -43,6 +43,7 @@ static void TestGenerateRandomInteger_Range100_Count5() {
 
 #define TEST_LIST(F)                                                           \
   F(TestGenerateRandomInteger_Range10_Count50)                                 \
-  F(TestGenerateRandomInteger_Range100_Count5)
+  F(TestGenerateRandomInteger_Range100_Count5)                                 \
+  (void)0;
 
 DEFINE_MAIN(TEST_LIST)

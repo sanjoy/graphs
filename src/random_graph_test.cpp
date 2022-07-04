@@ -46,6 +46,7 @@ static void TestCreateRandomSparseGraph_10_3_Connected() {
 #define TEST_LIST(F)                                                           \
   F(TestCreateRandomSparseGraph_10_3)                                          \
   F(TestCreateRandomSparseGraph_5_4)                                           \
-  F(TestCreateRandomSparseGraph_10_3_Connected)
+  F(TestCreateRandomSparseGraph_10_3_Connected)                                \
+  (void)0;
 
 DEFINE_MAIN(TEST_LIST)
