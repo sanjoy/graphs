@@ -119,11 +119,13 @@ public:
     bool is_at_end_ = false;
   };
 
-  std::unique_ptr<EdgeIterator> GetEdgesContainingVertex(VertexTy v) {
+  std::unique_ptr<EdgeIterator> GetEdgesContainingVertex(VertexTy v) override {
     return std::make_unique<ReplacementProductEdgeIterator>(this, /*vertex=*/v);
   }
 
-  OrderTy GetOrder() { return outer_->GetOrder() * inner_->GetOrder(); }
+  OrderTy GetOrder() override {
+    return outer_->GetOrder() * inner_->GetOrder();
+  }
 
   std::pair<VertexTy, VertexTy> Split(VertexTy v) {
     VertexTy outer = v / inner_->GetOrder();
