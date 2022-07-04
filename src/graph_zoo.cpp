@@ -143,7 +143,6 @@ public:
     outer_ = std::move(outer);
     inner_ = std::move(inner);
     assert(IsRegular(outer_.get()).has_value());
-    assert(IsRegular(inner_.get()).has_value());
   }
 
   Graph *GetOuter() { return outer_.get(); }
