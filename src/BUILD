@@ -48,7 +48,7 @@ cc_library(
 cc_binary(
     name = "graph_viz_driver",
     srcs = ["graph_viz_driver.cpp"],
-    deps = [":graph_viz", ":graph_zoo"]
+    deps = [":graph_viz", ":graph_zoo", ":random_graph"]
 )
 
 cc_library(

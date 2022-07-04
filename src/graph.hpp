@@ -32,12 +32,13 @@ public:
     virtual ~EdgeIterator();
   };
 
-  virtual std::unique_ptr<VertexIterator> GetVertices();
-  virtual std::unique_ptr<EdgeIterator> GetEdges();
   virtual std::unique_ptr<EdgeIterator>
   GetEdgesContainingVertex(VertexTy v) = 0;
 
   virtual OrderTy GetOrder() = 0;
+
+  virtual std::unique_ptr<VertexIterator> GetVertices();
+  virtual std::unique_ptr<EdgeIterator> GetEdges();
 
   virtual std::unique_ptr<Graph> Clone() = 0;
 };

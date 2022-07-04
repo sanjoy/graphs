@@ -1,6 +1,7 @@
 #include "graph_analysis.hpp"
 #include "graph_viz.hpp"
 #include "graph_zoo.hpp"
+#include "random_graph.hpp"
 
 #include <cctype>
 #include <iostream>
@@ -152,6 +153,42 @@ public:
                                     std::move(inner_graph));
   }
 
+  GraphResult MakeRandomGraph(const std::string &cmd,
+                              const std::vector<std::string> &cmd_words,
+                              bool *matched) {
+    *matched = cmd_words[kAssignOpOffset + 1] == "random";
+    if (!*matched)
+      return std::unique_ptr<Graph>(nullptr);
+
+    std::string error_msg = "Expected command of the form \"x = random <order> "
+                            "<avg degree> <optional seed>, got \"" +
+                            cmd + "\"";
+
+    if (cmd_words.size() != (kAssignOpOffset + 4) &&
+        cmd_words.size() != (kAssignOpOffset + 5))
+      return error_msg;
+
+    auto maybe_order = StrToL(cmd_words[kAssignOpOffset + 2]);
+    if (!maybe_order)
+      return error_msg;
+
+    auto maybe_avg_degree = StrToL(cmd_words[kAssignOpOffset + 3]);
+    if (!maybe_avg_degree)
+      return error_msg;
+
+    unsigned seed = 1;
+
+    if (cmd_words.size() == (kAssignOpOffset + 5)) {
+      auto maybe_seed = StrToL(cmd_words[kAssignOpOffset + 4]);
+      if (!maybe_seed)
+        return error_msg;
+      seed = *maybe_seed;
+    }
+
+    auto rng = CreateDefaultRandomBitGenerator(seed);
+    return CreateRandomSparseGraph(rng.get(), *maybe_order, *maybe_avg_degree);
+  }
+
   GraphResult MakeGraph(const std::string &cmd,
                         const std::vector<std::string> &cmd_words) {
     GraphResult result;
@@ -168,6 +205,7 @@ public:
     MAKE_GRAPH_CASE(Unconnected);
     MAKE_GRAPH_CASE(Bipartite);
     MAKE_GRAPH_CASE(ReplacementProduct);
+    MAKE_GRAPH_CASE(Random);
 
 #undef MAKE_GRAPH_CASE
 
