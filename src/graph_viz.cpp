@@ -39,13 +39,12 @@ bool CreatePngViaGraphviz(Graph *g, std::string filename_base, bool open) {
     dotfile << ExportToGraphviz(g);
   }
 
-  std::string dot_cmd =
-      std::string("dot < ") + filename_dot + " -Tpng > " + filename_png;
+  std::string dot_cmd = "dot < " + filename_dot + " -Tpng > " + filename_png;
   if (std::system(dot_cmd.c_str()))
     return false;
 
   if (open) {
-    std::string open_cmd = std::string("open ") + filename_png;
+    std::string open_cmd = "open " + filename_png;
     if (std::system(open_cmd.c_str()))
       return false;
   }

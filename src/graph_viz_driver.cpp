@@ -234,7 +234,7 @@ public:
     RUN_CMD_CASE(MakeGraphAndAssign);
     RUN_CMD_CASE(VisualizeGraph);
 
-    return std::string("\"") + cmd + "\"" + " does not match any commands!";
+    return "\"" + cmd + "\"" + " does not match any commands!";
   }
 
 private:

@@ -21,7 +21,7 @@ void ParseCmdOptions(int argc, char **argv, TestOptions *out) {
     for (char &c : sym_str)                                                    \
       if (c == '_')                                                            \
         c = '-';                                                               \
-    sym_str = std::string("--") + sym_str + "=";                               \
+    sym_str = "--" + sym_str + "=";                                            \
     if (arg.find(sym_str) == 0) {                                              \
       if (!out->sym.empty()) {                                                 \
         std::cerr << "Only one " << sym_str << " allowed!" << std::endl;       \
@@ -37,7 +37,7 @@ void ParseCmdOptions(int argc, char **argv, TestOptions *out) {
     for (char &c : sym_str)                                                    \
       if (c == '_')                                                            \
         c = '-';                                                               \
-    sym_str = std::string("--") + sym_str;                                     \
+    sym_str = "--" + sym_str;                                                  \
     if (arg == sym_str)                                                        \
       out->sym = true;                                                         \
   } while (0)
