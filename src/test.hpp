@@ -68,13 +68,13 @@ void ParseCmdOptions(int argc, char **argv, TestOptions *out);
 
 namespace graph {
 namespace detail {
-void CanonicalizeEdgeList(std::vector<Graph::EdgeType> *edges);
+void CanonicalizeEdgeList(std::vector<Graph::EdgeTy> *edges);
 }
 } // namespace graph
 
 #define CHECK_EDGES_EQ(expected_edges, input_graph)                            \
   do {                                                                         \
-    std::vector<::graph::Graph::EdgeType> __actual_edges;                      \
+    std::vector<::graph::Graph::EdgeTy> __actual_edges;                        \
     for (auto e : Iterate((input_graph)->GetEdges()))                          \
       __actual_edges.push_back(e);                                             \
     ::graph::detail::CanonicalizeEdgeList(&__actual_edges);                    \

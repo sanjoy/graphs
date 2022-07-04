@@ -7,7 +7,7 @@
 using namespace graph;
 
 static void TestIterators_0() {
-  std::vector<Graph::EdgeType> edges = {
+  std::vector<Graph::EdgeTy> edges = {
       {0, 0}, {0, 2}, {0, 4}, {1, 3}, {3, 1},
   };
   std::unique_ptr<Graph> concrete_graph = CreateConcreteGraph(5, edges);
@@ -15,7 +15,7 @@ static void TestIterators_0() {
 }
 
 static void TestIterators_1() {
-  std::vector<Graph::EdgeType> edges = {
+  std::vector<Graph::EdgeTy> edges = {
       {0, 1},
       {0, 2},
       {1, 2},
@@ -25,7 +25,7 @@ static void TestIterators_1() {
 }
 
 static void TestIterators_2() {
-  std::vector<Graph::EdgeType> edges = {
+  std::vector<Graph::EdgeTy> edges = {
       {0, 1}, {0, 2}, {1, 2}, {0, 0}, {1, 1}, {2, 2},
   };
   std::unique_ptr<Graph> concrete_graph = CreateConcreteGraph(3, edges);

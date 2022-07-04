@@ -9,12 +9,12 @@ using namespace graph;
 
 static void TestCreateCompleteGraph_NoSelfLoops() {
   auto graph = CreateCompleteGraph(10, /*self_loops=*/false);
-  Graph::NodeCountType node_count = graph->GetNodeCount();
+  Graph::OrderTy vertex_count = graph->GetOrder();
 
   CHECK(!CheckConsistency(graph.get()).has_value())
-  CHECK_EQ(node_count, 10);
+  CHECK_EQ(vertex_count, 10);
 
-  std::set<Graph::EdgeType> edges;
+  std::set<Graph::EdgeTy> edges;
   for (auto e : Iterate(graph->GetEdges())) {
     CHECK_LT(e.first, 10);
     CHECK_LT(e.second, 10);
@@ -28,12 +28,12 @@ static void TestCreateCompleteGraph_NoSelfLoops() {
 
 static void TestCreateCompleteGraph_WithSelfLoops() {
   auto graph = CreateCompleteGraph(10, /*self_loops=*/true);
-  Graph::NodeCountType node_count = graph->GetNodeCount();
+  Graph::OrderTy vertex_count = graph->GetOrder();
 
   CHECK(!CheckConsistency(graph.get()).has_value())
-  CHECK_EQ(node_count, 10);
+  CHECK_EQ(vertex_count, 10);
 
-  std::set<Graph::EdgeType> edges;
+  std::set<Graph::EdgeTy> edges;
   for (auto e : Iterate(graph->GetEdges())) {
     CHECK_LT(e.first, 10);
     CHECK_LT(e.second, 10);
@@ -47,11 +47,11 @@ static void TestCreateCompleteGraph_WithSelfLoops() {
 
 static void TestUnconnectedGraph() {
   auto graph = CreateUnconnectedGraph(10);
-  Graph::NodeCountType node_count = graph->GetNodeCount();
+  Graph::OrderTy vertex_count = graph->GetOrder();
 
   CHECK(!CheckConsistency(graph.get()).has_value())
 
-  CHECK_EQ(node_count, 10);
+  CHECK_EQ(vertex_count, 10);
 
   for (auto e : Iterate(graph->GetEdges())) {
     (void)e;
@@ -61,13 +61,13 @@ static void TestUnconnectedGraph() {
 
 static void TestCreateCompleteBipartiteGraph_2_5() {
   auto graph = CreateCompleteBipartiteGraph(2, 5);
-  Graph::NodeCountType node_count = graph->GetNodeCount();
+  Graph::OrderTy vertex_count = graph->GetOrder();
 
   CHECK(!CheckConsistency(graph.get()).has_value())
 
-  CHECK_EQ(node_count, 7);
+  CHECK_EQ(vertex_count, 7);
 
-  std::set<Graph::EdgeType> edges;
+  std::set<Graph::EdgeTy> edges;
   for (auto e : Iterate(graph->GetEdges())) {
     CHECK_LT(e.first, 7);
     CHECK_GE(e.first, 0);
@@ -88,11 +88,11 @@ static void TestCreateCompleteBipartiteGraph_2_5() {
 
 static void TestCreateCompleteBipartiteGraph_0_5() {
   auto graph = CreateCompleteBipartiteGraph(0, 5);
-  Graph::NodeCountType node_count = graph->GetNodeCount();
+  Graph::OrderTy vertex_count = graph->GetOrder();
 
   CHECK(!CheckConsistency(graph.get()).has_value())
 
-  CHECK_EQ(node_count, 5);
+  CHECK_EQ(vertex_count, 5);
 
   for (auto e : Iterate(graph->GetEdges())) {
     (void)e;
@@ -102,11 +102,11 @@ static void TestCreateCompleteBipartiteGraph_0_5() {
 
 static void TestCreateCompleteBipartiteGraph_5_0() {
   auto graph = CreateCompleteBipartiteGraph(5, 0);
-  Graph::NodeCountType node_count = graph->GetNodeCount();
+  Graph::OrderTy vertex_count = graph->GetOrder();
 
   CHECK(!CheckConsistency(graph.get()).has_value())
 
-  CHECK_EQ(node_count, 5);
+  CHECK_EQ(vertex_count, 5);
 
   for (auto e : Iterate(graph->GetEdges())) {
     (void)e;
@@ -116,13 +116,13 @@ static void TestCreateCompleteBipartiteGraph_5_0() {
 
 static void TestCreateCompleteBipartiteGraph_1_5() {
   auto graph = CreateCompleteBipartiteGraph(1, 5);
-  Graph::NodeCountType node_count = graph->GetNodeCount();
+  Graph::OrderTy vertex_count = graph->GetOrder();
 
   CHECK(!CheckConsistency(graph.get()).has_value())
 
-  CHECK_EQ(node_count, 6);
+  CHECK_EQ(vertex_count, 6);
 
-  std::set<Graph::EdgeType> edges;
+  std::set<Graph::EdgeTy> edges;
   for (auto e : Iterate(graph->GetEdges())) {
     if (e.second == 0)
       std::swap(e.first, e.second);
@@ -137,13 +137,13 @@ static void TestCreateCompleteBipartiteGraph_1_5() {
 
 static void TestCreateCompleteBipartiteGraph_5_1() {
   auto graph = CreateCompleteBipartiteGraph(5, 1);
-  Graph::NodeCountType node_count = graph->GetNodeCount();
+  Graph::OrderTy vertex_count = graph->GetOrder();
 
   CHECK(!CheckConsistency(graph.get()).has_value())
 
-  CHECK_EQ(node_count, 6);
+  CHECK_EQ(vertex_count, 6);
 
-  std::set<Graph::EdgeType> edges;
+  std::set<Graph::EdgeTy> edges;
   for (auto e : Iterate(graph->GetEdges())) {
     if (e.second == 5)
       std::swap(e.first, e.second);
@@ -163,11 +163,11 @@ static void TestReplacementProduct_Ring4_K2() {
   auto replacement_product =
       CreateReplacementProduct(std::move(outer), std::move(inner));
 
-  std::vector<Graph::EdgeType> expected_edges = {
+  std::vector<Graph::EdgeTy> expected_edges = {
       {0, 1}, {0, 2}, {1, 6}, {2, 3}, {3, 4}, {4, 5}, {5, 7}, {6, 7},
   };
 
-  CHECK_EQ(replacement_product->GetNodeCount(), 8);
+  CHECK_EQ(replacement_product->GetOrder(), 8);
   CHECK_EDGES_EQ(expected_edges, replacement_product);
 }
 

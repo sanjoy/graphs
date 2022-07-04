@@ -14,5 +14,5 @@ std::unique_ptr<Graph> CreateCompleteBipartiteGraph(int l, int r);
 std::unique_ptr<Graph> CreateReplacementProduct(std::unique_ptr<Graph> outer,
                                                 std::unique_ptr<Graph> inner);
 
-std::unique_ptr<Graph> CreateRingGraph(int n);
+std::unique_ptr<Graph> CreateRingGraph(int v);
 } // namespace graph

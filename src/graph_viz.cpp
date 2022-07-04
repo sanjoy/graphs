@@ -10,18 +10,18 @@ std::string ExportToGraphviz(Graph *g, std::string name) {
   std::stringstream out;
 
   out << "graph " << name << " {\n";
-  std::set<Graph::NodeType> unconnected_nodes;
-  for (auto n : Iterate(g->GetNodes()))
-    unconnected_nodes.insert(n);
+  std::set<Graph::VertexTy> unconnected_vertices;
+  for (auto v : Iterate(g->GetVertices()))
+    unconnected_vertices.insert(v);
 
   for (auto e : Iterate(g->GetEdges())) {
     out << "  " << e.first << " -- " << e.second << "\n";
-    unconnected_nodes.erase(e.first);
-    unconnected_nodes.erase(e.second);
+    unconnected_vertices.erase(e.first);
+    unconnected_vertices.erase(e.second);
   }
 
-  for (auto n : unconnected_nodes)
-    out << "  " << n << "\n";
+  for (auto v : unconnected_vertices)
+    out << "  " << v << "\n";
 
   out << "}\n";
   return out.str();

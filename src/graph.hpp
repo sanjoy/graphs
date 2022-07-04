@@ -8,35 +8,36 @@
 namespace graph {
 class Graph {
 public:
-  using NodeType = unsigned long;
-  using NodeCountType = unsigned long;
-  using EdgeType = std::pair<NodeType, NodeType>;
+  using VertexTy = unsigned long;
+  using OrderTy = unsigned long;
+  using EdgeTy = std::pair<VertexTy, VertexTy>;
 
   virtual ~Graph();
 
-  class NodeIterator {
+  class VertexIterator {
   public:
-    virtual NodeType Get() = 0;
+    virtual VertexTy Get() = 0;
     virtual void Next() = 0;
     virtual bool IsAtEnd() = 0;
 
-    virtual ~NodeIterator();
+    virtual ~VertexIterator();
   };
 
   class EdgeIterator {
   public:
-    virtual EdgeType Get() = 0;
+    virtual EdgeTy Get() = 0;
     virtual void Next() = 0;
     virtual bool IsAtEnd() = 0;
 
     virtual ~EdgeIterator();
   };
 
-  virtual std::unique_ptr<NodeIterator> GetNodes();
+  virtual std::unique_ptr<VertexIterator> GetVertices();
   virtual std::unique_ptr<EdgeIterator> GetEdges();
-  virtual std::unique_ptr<EdgeIterator> GetEdgesWithNode(NodeType n) = 0;
+  virtual std::unique_ptr<EdgeIterator>
+  GetEdgesContainingVertex(VertexTy v) = 0;
 
-  virtual NodeCountType GetNodeCount() = 0;
+  virtual OrderTy GetOrder() = 0;
 
   virtual std::optional<std::string> CheckConsistency();
 };
@@ -74,22 +75,22 @@ private:
 };
 } // namespace detail
 
-inline detail::IteratorAdapter<Graph::EdgeType, Graph::EdgeIterator>
+inline detail::IteratorAdapter<Graph::EdgeTy, Graph::EdgeIterator>
 Iterate(std::unique_ptr<Graph::EdgeIterator> it) {
-  return detail::IteratorAdapter<Graph::EdgeType, Graph::EdgeIterator>(
+  return detail::IteratorAdapter<Graph::EdgeTy, Graph::EdgeIterator>(
       std::move(it));
 }
 
-inline detail::IteratorAdapter<Graph::NodeType, Graph::NodeIterator>
-Iterate(std::unique_ptr<Graph::NodeIterator> it) {
-  return detail::IteratorAdapter<Graph::NodeType, Graph::NodeIterator>(
+inline detail::IteratorAdapter<Graph::VertexTy, Graph::VertexIterator>
+Iterate(std::unique_ptr<Graph::VertexIterator> it) {
+  return detail::IteratorAdapter<Graph::VertexTy, Graph::VertexIterator>(
       std::move(it));
 }
 
-std::unique_ptr<Graph> CreateConcreteGraph(Graph::NodeCountType num_nodes,
-                                           std::span<Graph::EdgeType> edges);
+std::unique_ptr<Graph> CreateConcreteGraph(Graph::OrderTy num_vertices,
+                                           std::span<Graph::EdgeTy> edges);
 
 std::optional<std::string> CheckConsistency(Graph *g);
 
-std::ostream &operator<<(std::ostream &, const Graph::EdgeType &);
+std::ostream &operator<<(std::ostream &, const Graph::EdgeTy &);
 } // namespace graph

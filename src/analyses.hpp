@@ -4,7 +4,7 @@
 #include "random.hpp"
 
 namespace graph {
-std::optional<Graph::NodeCountType> IsRegular(Graph *g);
+std::optional<Graph::OrderTy> IsRegular(Graph *g);
 
 // Unclear how to get good probabilistic bounds on the cheeger constant.
 double DO_NOT_USE_ComputeCheegerConstantUpperBound(

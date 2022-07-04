@@ -53,14 +53,14 @@ void ParseCmdOptions(int argc, char **argv, TestOptions *out) {
   }
 }
 
-void CanonicalizeEdgeList(std::vector<Graph::EdgeType> *edges) {
-  for (Graph::EdgeType &e : *edges) {
+void CanonicalizeEdgeList(std::vector<Graph::EdgeTy> *edges) {
+  for (Graph::EdgeTy &e : *edges) {
     if (e.first > e.second)
       std::swap(e.first, e.second);
   }
 
   std::sort(edges->begin(), edges->end(),
-            [](const Graph::EdgeType &e1, const Graph::EdgeType &e2) {
+            [](const Graph::EdgeTy &e1, const Graph::EdgeTy &e2) {
               if (e1.first == e2.first)
                 return e1.second < e2.second;
               return e1.first < e2.first;

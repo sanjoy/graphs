@@ -8,7 +8,7 @@
 using namespace graph;
 
 static void TestIsRegular_CompleteGraph() {
-  std::vector<Graph::EdgeType> edges = {
+  std::vector<Graph::EdgeTy> edges = {
       {0, 1},
       {0, 2},
       {1, 2},
@@ -20,7 +20,7 @@ static void TestIsRegular_CompleteGraph() {
 }
 
 static void TestIsRegular_NullGraph() {
-  std::vector<Graph::EdgeType> edges = {};
+  std::vector<Graph::EdgeTy> edges = {};
   std::unique_ptr<Graph> graph = CreateConcreteGraph(3, edges);
   auto degree = IsRegular(graph.get());
   CHECK(degree.has_value());
@@ -28,7 +28,7 @@ static void TestIsRegular_NullGraph() {
 }
 
 static void TestIsRegular_CompleteGraphWithSelfLoops() {
-  std::vector<Graph::EdgeType> edges = {
+  std::vector<Graph::EdgeTy> edges = {
       {0, 0}, {1, 1}, {2, 2}, {0, 1}, {0, 2}, {1, 2},
   };
   std::unique_ptr<Graph> graph = CreateConcreteGraph(3, edges);
@@ -38,7 +38,7 @@ static void TestIsRegular_CompleteGraphWithSelfLoops() {
 }
 
 static void TestIsRegular_IrregularGraph() {
-  std::vector<Graph::EdgeType> edges = {
+  std::vector<Graph::EdgeTy> edges = {
       {0, 1},
       {1, 2},
   };
@@ -48,7 +48,7 @@ static void TestIsRegular_IrregularGraph() {
 }
 
 static void TestComputeExactCheegerConstant_Ring4() {
-  std::vector<Graph::EdgeType> edges = {
+  std::vector<Graph::EdgeTy> edges = {
       {0, 1},
       {1, 2},
       {2, 3},
@@ -61,7 +61,7 @@ static void TestComputeExactCheegerConstant_Ring4() {
 
 static double ComputeExactCheegerConstantForCompleteGraph(int k,
                                                           bool self_loops) {
-  std::vector<Graph::EdgeType> edges;
+  std::vector<Graph::EdgeTy> edges;
   for (int i = 0; i < k; i++) {
     if (self_loops)
       edges.push_back({i, i});
@@ -98,11 +98,11 @@ static void TestComputeExactCheegerConstant_K9_WithSelfLoops() {
 }
 
 static double
-ComputeExactCheegerConstantForRandomGraph(Graph::NodeCountType num_nodes,
-                                          Graph::NodeCountType avg_degree) {
+ComputeExactCheegerConstantForRandomGraph(Graph::OrderTy num_vertices,
+                                          Graph::OrderTy avg_degree) {
   auto rbg = CreateDefaultRandomBitGenerator();
   std::unique_ptr<Graph> complete_graph =
-      CreateRandomSparseGraph(rbg.get(), num_nodes, avg_degree);
+      CreateRandomSparseGraph(rbg.get(), num_vertices, avg_degree);
   return ComputeExactCheegerConstant(complete_graph.get());
 }
 
@@ -122,7 +122,7 @@ static void TestComputeExactCheegerConstant_RandomGraph_15_3() {
 }
 
 static void TestComputeExactCheegerConstant_K10_Disconnected_1() {
-  std::vector<Graph::EdgeType> edges;
+  std::vector<Graph::EdgeTy> edges;
   for (int i = 0; i < 9; i++)
     for (int j = i + 1; j < 9; j++)
       edges.push_back({i, j});
@@ -133,7 +133,7 @@ static void TestComputeExactCheegerConstant_K10_Disconnected_1() {
 }
 
 static void TestComputeExactCheegerConstant_K10_Disconnected_2() {
-  std::vector<Graph::EdgeType> edges;
+  std::vector<Graph::EdgeTy> edges;
   for (int i = 0; i < 10; i++) {
     for (int j = i + 1; j < 10; j++) {
       if (i == 5 || j == 5)
@@ -148,7 +148,7 @@ static void TestComputeExactCheegerConstant_K10_Disconnected_2() {
 }
 
 static void TestComputeExactCheegerConstant_AlmostK10() {
-  std::vector<Graph::EdgeType> edges;
+  std::vector<Graph::EdgeTy> edges;
   for (int i = 0; i < 10; i++) {
     for (int j = i + 1; j < 10; j++) {
       if (i == 5 && j == 6)

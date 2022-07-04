@@ -6,21 +6,21 @@
 #include <vector>
 
 namespace graph {
-std::unique_ptr<Graph>
-CreateRandomSparseGraph(RandomBitGenerator *gen, Graph::NodeCountType num_nodes,
-                        Graph::NodeCountType average_degree,
-                        bool ensure_connected) {
-  std::vector<Graph::EdgeType> edges;
-  for (Graph::NodeCountType i = 0; i < num_nodes; i++) {
+std::unique_ptr<Graph> CreateRandomSparseGraph(RandomBitGenerator *gen,
+                                               Graph::OrderTy num_vertices,
+                                               Graph::OrderTy average_degree,
+                                               bool ensure_connected) {
+  std::vector<Graph::EdgeTy> edges;
+  for (Graph::OrderTy i = 0; i < num_vertices; i++) {
     bool some_edge_added = false;
-    for (Graph::NodeCountType j = i + 1; j < num_nodes; j++) {
+    for (Graph::OrderTy j = i + 1; j < num_vertices; j++) {
       // The calculation is as follows:
       //
-      // Number of edges = Degree * Nodes / 2 = X
-      // Number of possible edges = Nodes * (Nodes - 1) / 2 = Y
-      // Probability of a specific edge = X / Y = Degree / (Nodes - 1)
+      // Number of edges = Degree * Vertices / 2 = X
+      // Number of possible edges = Vertices * (Vertices - 1) / 2 = Y
+      // Probability of a specific edge = X / Y = Degree / (Vertices - 1)
       bool should_add_edge =
-          GenerateRandomInteger(gen, num_nodes) < average_degree;
+          GenerateRandomInteger(gen, num_vertices) < average_degree;
       if (should_add_edge) {
         edges.push_back({i, j});
         LOG << "Adding edge " << edges.back() << "\n";
@@ -29,9 +29,9 @@ CreateRandomSparseGraph(RandomBitGenerator *gen, Graph::NodeCountType num_nodes,
     }
 
     if (!some_edge_added && ensure_connected)
-      edges.push_back({i, GenerateRandomInteger(gen, num_nodes)});
+      edges.push_back({i, GenerateRandomInteger(gen, num_vertices)});
   }
 
-  return CreateConcreteGraph(num_nodes, edges);
+  return CreateConcreteGraph(num_vertices, edges);
 }
 } // namespace graph

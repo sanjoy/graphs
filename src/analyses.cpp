@@ -6,11 +6,11 @@
 #include <vector>
 
 namespace graph {
-std::optional<Graph::NodeCountType> IsRegular(Graph *g) {
-  std::optional<Graph::NodeCountType> degree;
-  for (auto node : Iterate(g->GetNodes())) {
-    Graph::NodeCountType this_degree = 0;
-    for (auto edge : Iterate(g->GetEdgesWithNode(node))) {
+std::optional<Graph::OrderTy> IsRegular(Graph *g) {
+  std::optional<Graph::OrderTy> degree;
+  for (auto vertex : Iterate(g->GetVertices())) {
+    Graph::OrderTy this_degree = 0;
+    for (auto edge : Iterate(g->GetEdgesContainingVertex(vertex))) {
       (void)edge;
       this_degree++;
     }
@@ -27,29 +27,29 @@ std::optional<Graph::NodeCountType> IsRegular(Graph *g) {
   return degree.value_or(0);
 }
 
-static Graph::NodeCountType PickRandomSubset(RandomBitGenerator *generator,
-                                             std::vector<bool> *set) {
-  Graph::NodeCountType node_count = 0;
+static Graph::OrderTy PickRandomSubset(RandomBitGenerator *generator,
+                                       std::vector<bool> *set) {
+  Graph::OrderTy vertex_count = 0;
   for (size_t i = 0, e = set->size(); i != e; i++) {
     if (generator->Generate()) {
-      node_count++;
+      vertex_count++;
       (*set)[i] = true;
     } else {
       (*set)[i] = false;
     }
   }
 
-  return node_count;
+  return vertex_count;
 }
 
-static Graph::NodeCountType FindBoundaryNodes(Graph *g,
-                                              const std::vector<bool> &nodes) {
-  Graph::NodeCountType boundary_size = 0;
-  std::vector<bool> boundary_set(nodes.size(), false);
-  for (size_t i = 0, e = nodes.size(); i != e; i++) {
-    if (nodes[i]) {
-      for (auto e : Iterate(g->GetEdgesWithNode(i))) {
-        if (!nodes[e.second] && !boundary_set[e.second]) {
+static Graph::OrderTy FindBoundaryVertices(Graph *g,
+                                           const std::vector<bool> &vertices) {
+  Graph::OrderTy boundary_size = 0;
+  std::vector<bool> boundary_set(vertices.size(), false);
+  for (size_t i = 0, e = vertices.size(); i != e; i++) {
+    if (vertices[i]) {
+      for (auto e : Iterate(g->GetEdgesContainingVertex(i))) {
+        if (!vertices[e.second] && !boundary_set[e.second]) {
           boundary_size++;
           boundary_set[e.second] = true;
         }
@@ -61,27 +61,28 @@ static Graph::NodeCountType FindBoundaryNodes(Graph *g,
 
 double DO_NOT_USE_ComputeCheegerConstantUpperBound(
     Graph *g, RandomBitGenerator *generator, int num_iters) {
-  Graph::NodeCountType node_count = g->GetNodeCount();
+  Graph::OrderTy vertex_count = g->GetOrder();
   ;
 
   double upper_bound = std::numeric_limits<double>::infinity();
 
-  std::vector<bool> selected_nodes(node_count);
+  std::vector<bool> selected_vertices(vertex_count);
   for (int i = 0; i < num_iters; i++) {
-    Graph::NodeCountType selected_node_count =
-        PickRandomSubset(generator, &selected_nodes);
+    Graph::OrderTy selected_vertex_count =
+        PickRandomSubset(generator, &selected_vertices);
 
-    if (selected_node_count == node_count)
+    if (selected_vertex_count == vertex_count)
       continue;
 
-    if (selected_node_count > node_count / 2) {
-      selected_nodes.flip();
-      selected_node_count = node_count - selected_node_count;
+    if (selected_vertex_count > vertex_count / 2) {
+      selected_vertices.flip();
+      selected_vertex_count = vertex_count - selected_vertex_count;
     }
 
-    Graph::NodeCountType boundary_nodes = FindBoundaryNodes(g, selected_nodes);
-    double this_upper_bound = static_cast<double>(boundary_nodes) /
-                              static_cast<double>(selected_node_count);
+    Graph::OrderTy boundary_vertices =
+        FindBoundaryVertices(g, selected_vertices);
+    double this_upper_bound = static_cast<double>(boundary_vertices) /
+                              static_cast<double>(selected_vertex_count);
     upper_bound = std::min(upper_bound, this_upper_bound);
   }
 
@@ -100,11 +101,12 @@ static int IntegerToBits(unsigned long input, std::vector<bool> *output) {
   return set_bits;
 }
 
-std::ostream &operator<<(std::ostream &os, const std::vector<bool> &node_set) {
+std::ostream &operator<<(std::ostream &os,
+                         const std::vector<bool> &vertex_set) {
   os << "{";
   bool first = true;
-  for (int i = 0, e = node_set.size(); i != e; i++) {
-    if (node_set[i]) {
+  for (int i = 0, e = vertex_set.size(); i != e; i++) {
+    if (vertex_set[i]) {
       if (!first)
         os << ", ";
       first = false;
@@ -116,44 +118,45 @@ std::ostream &operator<<(std::ostream &os, const std::vector<bool> &node_set) {
 }
 
 double ComputeExactCheegerConstant(Graph *g) {
-  Graph::NodeCountType node_count = g->GetNodeCount();
+  Graph::OrderTy vertex_count = g->GetOrder();
 
   double upper_bound = std::numeric_limits<double>::infinity();
-  Graph::NodeCountType selected_node_count_for_min = -1;
-  Graph::NodeCountType boundary_nodes_for_min = -1;
+  Graph::OrderTy selected_vertex_count_for_min = -1;
+  Graph::OrderTy boundary_vertices_for_min = -1;
 
-  int total_combinations = 1u << node_count;
-  std::vector<bool> selected_nodes(node_count);
+  int total_combinations = 1u << vertex_count;
+  std::vector<bool> selected_vertices(vertex_count);
 
-  LOG_VAR(node_count);
+  LOG_VAR(vertex_count);
 
   for (unsigned i = 1; i != total_combinations; i++) {
-    Graph::NodeCountType selected_node_count =
-        IntegerToBits(i, &selected_nodes);
-    if (selected_node_count > node_count / 2)
+    Graph::OrderTy selected_vertex_count = IntegerToBits(i, &selected_vertices);
+    if (selected_vertex_count > vertex_count / 2)
       continue;
 
-    Graph::NodeCountType boundary_nodes = FindBoundaryNodes(g, selected_nodes);
-    double this_upper_bound = static_cast<double>(boundary_nodes) /
-                              static_cast<double>(selected_node_count);
+    Graph::OrderTy boundary_vertices =
+        FindBoundaryVertices(g, selected_vertices);
+    double this_upper_bound = static_cast<double>(boundary_vertices) /
+                              static_cast<double>(selected_vertex_count);
 
-    assert(boundary_nodes <= (node_count - selected_node_count) &&
-           "Cannot have more boundary nodes that the number of nodes outside "
+    assert(boundary_vertices <= (vertex_count - selected_vertex_count) &&
+           "Cannot have more boundary vertices that the number of vertices "
+           "outside "
            "the region!");
-    LOG_VAR(selected_node_count);
-    LOG_VAR(selected_nodes);
-    LOG_VAR(boundary_nodes);
+    LOG_VAR(selected_vertex_count);
+    LOG_VAR(selected_vertices);
+    LOG_VAR(boundary_vertices);
 
     if (this_upper_bound < upper_bound) {
       upper_bound = this_upper_bound;
-      selected_node_count_for_min = selected_node_count;
-      boundary_nodes_for_min = boundary_nodes;
+      selected_vertex_count_for_min = selected_vertex_count;
+      boundary_vertices_for_min = boundary_vertices;
     }
     upper_bound = std::min(upper_bound, this_upper_bound);
   }
 
-  LOG_VAR(selected_node_count_for_min);
-  LOG_VAR(boundary_nodes_for_min);
+  LOG_VAR(selected_vertex_count_for_min);
+  LOG_VAR(boundary_vertices_for_min);
 
   return upper_bound;
 }
