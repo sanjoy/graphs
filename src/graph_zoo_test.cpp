@@ -171,6 +171,29 @@ static void TestReplacementProduct_Ring4_K2() {
   CHECK_EDGES_EQ(expected_edges, replacement_product);
 }
 
+static void TestCreateRingGraph_4() {
+  auto ring = CreateRingGraph(4);
+
+  std::vector<Graph::EdgeTy> expected_edges = {
+      {0, 1},
+      {1, 2},
+      {2, 3},
+      {3, 0},
+  };
+
+  CHECK_EQ(ring->GetOrder(), 4);
+  CHECK_EDGES_EQ(expected_edges, ring);
+}
+
+static void TestCreateRingGraph_2() {
+  auto ring = CreateRingGraph(2);
+
+  std::vector<Graph::EdgeTy> expected_edges = {{0, 1}};
+
+  CHECK_EQ(ring->GetOrder(), 2);
+  CHECK_EDGES_EQ(expected_edges, ring);
+}
+
 #define TEST_LIST(F)                                                           \
   F(TestCreateCompleteGraph_NoSelfLoops)                                       \
   F(TestCreateCompleteGraph_WithSelfLoops)                                     \
@@ -181,6 +204,8 @@ static void TestReplacementProduct_Ring4_K2() {
   F(TestCreateCompleteBipartiteGraph_1_5)                                      \
   F(TestCreateCompleteBipartiteGraph_5_1)                                      \
   F(TestReplacementProduct_Ring4_K2)                                           \
+  F(TestCreateRingGraph_4)                                                     \
+  F(TestCreateRingGraph_2)                                                     \
   (void)0;
 
 DEFINE_MAIN(TEST_LIST)
