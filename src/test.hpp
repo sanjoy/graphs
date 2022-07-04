@@ -1,5 +1,6 @@
 #pragma once
 
+#include "graph.hpp"
 #include "logging.hpp"
 
 #include <iostream>
@@ -64,6 +65,24 @@ void ParseCmdOptions(int argc, char **argv, TestOptions *out);
 #define CHECK_LE(a, b) __CHECK_RELATION(a, b, >, ">")
 #define CHECK_GT(a, b) __CHECK_RELATION(a, b, <=, "<=")
 #define CHECK_GE(a, b) __CHECK_RELATION(a, b, <, "<")
+
+namespace graph {
+namespace detail {
+void CanonicalizeEdgeList(std::vector<Graph::EdgeType> *edges);
+}
+} // namespace graph
+
+#define CHECK_EDGES_EQ(expected_edges, input_graph)                            \
+  do {                                                                         \
+    std::vector<::graph::Graph::EdgeType> __actual_edges;                      \
+    for (auto e : Iterate((input_graph)->GetEdges()))                          \
+      __actual_edges.push_back(e);                                             \
+    ::graph::detail::CanonicalizeEdgeList(&__actual_edges);                    \
+    ::graph::detail::CanonicalizeEdgeList(&expected_edges);                    \
+    CHECK_EQ(__actual_edges.size(), expected_edges.size());                    \
+    for (int i = 0, e = __actual_edges.size(); i != e; i++)                    \
+      CHECK_EQ(__actual_edges[i], expected_edges[i]);                          \
+  } while (0)
 
 #define __IMPL__RUN_TEST(fn)                                                   \
   do {                                                                         \

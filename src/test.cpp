@@ -52,5 +52,19 @@ void ParseCmdOptions(int argc, char **argv, TestOptions *out) {
     CMD_ARG_STR_KEY_VALUE(test_filter);
   }
 }
+
+void CanonicalizeEdgeList(std::vector<Graph::EdgeType> *edges) {
+  for (Graph::EdgeType &e : *edges) {
+    if (e.first > e.second)
+      std::swap(e.first, e.second);
+  }
+
+  std::sort(edges->begin(), edges->end(),
+            [](const Graph::EdgeType &e1, const Graph::EdgeType &e2) {
+              if (e1.first == e2.first)
+                return e1.second < e2.second;
+              return e1.first < e2.first;
+            });
+}
 } // namespace detail
 } // namespace graph

@@ -33,12 +33,12 @@ public:
   };
 
   virtual std::unique_ptr<NodeIterator> GetNodes();
-  virtual std::unique_ptr<EdgeIterator> GetEdges() = 0;
+  virtual std::unique_ptr<EdgeIterator> GetEdges();
   virtual std::unique_ptr<EdgeIterator> GetEdgesWithNode(NodeType n) = 0;
 
   virtual NodeCountType GetNodeCount() = 0;
 
-  virtual std::optional<std::string> CheckConsistency() = 0;
+  virtual std::optional<std::string> CheckConsistency();
 };
 
 namespace detail {

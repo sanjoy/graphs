@@ -10,9 +10,9 @@ static void TestExportToGraphviz_CompleteGraph_NoSelfLoops() {
   std::string result = ExportToGraphviz(complete_graph.get(), "K3");
   const char *expected = R"(
 graph K3 {
-  1 -- 0
-  2 -- 0
-  2 -- 1
+  0 -- 1
+  0 -- 2
+  1 -- 2
 }
 )";
   CHECK_EQ(result, 1 + expected);

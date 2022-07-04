@@ -1,3 +1,4 @@
+#include "graph_viz.hpp"
 #include "graph_zoo.hpp"
 
 #include "test.hpp"
@@ -155,6 +156,21 @@ static void TestCreateCompleteBipartiteGraph_5_1() {
   CHECK_EQ(edges.size(), 5);
 }
 
+static void TestReplacementProduct_Ring4_K2() {
+  auto outer = CreateRingGraph(4);
+  auto inner = CreateCompleteGraph(2, false);
+
+  auto replacement_product =
+      CreateReplacementProduct(std::move(outer), std::move(inner));
+
+  std::vector<Graph::EdgeType> expected_edges = {
+      {0, 1}, {0, 2}, {1, 6}, {2, 3}, {3, 4}, {4, 5}, {5, 7}, {6, 7},
+  };
+
+  CHECK_EQ(replacement_product->GetNodeCount(), 8);
+  CHECK_EDGES_EQ(expected_edges, replacement_product);
+}
+
 #define TEST_LIST(F)                                                           \
   F(TestCreateCompleteGraph_NoSelfLoops)                                       \
   F(TestCreateCompleteGraph_WithSelfLoops)                                     \
@@ -163,6 +179,8 @@ static void TestCreateCompleteBipartiteGraph_5_1() {
   F(TestCreateCompleteBipartiteGraph_0_5)                                      \
   F(TestCreateCompleteBipartiteGraph_5_0)                                      \
   F(TestCreateCompleteBipartiteGraph_1_5)                                      \
-  F(TestCreateCompleteBipartiteGraph_5_1)
+  F(TestCreateCompleteBipartiteGraph_5_1)                                      \
+  F(TestReplacementProduct_Ring4_K2)                                           \
+  (void)0;
 
 DEFINE_MAIN(TEST_LIST)

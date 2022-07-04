@@ -2,6 +2,7 @@ cc_library(
     name = "graph",
     srcs = ["graph.cpp"],
     hdrs = ["graph.hpp"],
+    deps = [":logging"],
 )
 
 cc_library(
@@ -28,7 +29,7 @@ cc_library(
     name = "graph_zoo",
     srcs = ["graph_zoo.cpp"],
     hdrs = ["graph_zoo.hpp"],
-    deps = [":graph", ":logging"]
+    deps = [":graph", ":analyses", ":logging"]
 )
 
 cc_library(
@@ -54,7 +55,7 @@ cc_library(
     name = "test",
     srcs = ["test.cpp"],
     hdrs = ["test.hpp"],
-    deps = [":logging"],
+    deps = [":logging", ":graph"],
     testonly = True,
 )
 
@@ -85,7 +86,7 @@ cc_test(
 cc_test(
     name = "graph_zoo_test",
     srcs = ["graph_zoo_test.cpp"],
-    deps = [":graph_zoo", ":test"]
+    deps = [":graph_zoo", ":test", ":graph_viz"]
 )
 
 cc_test(

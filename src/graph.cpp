@@ -1,5 +1,7 @@
 #include "graph.hpp"
 
+#include "logging.hpp"
+
 #include <algorithm>
 #include <set>
 #include <sstream>
@@ -25,11 +27,69 @@ private:
   Graph::NodeCountType i_ = 0;
   const Graph::NodeCountType num_nodes_;
 };
+
+class FiniteGraphEdgeIterator final : public Graph::EdgeIterator {
+public:
+  FiniteGraphEdgeIterator(Graph *g)
+      : graph_(g), node_iterator_(g->GetNodes()),
+        current_edge_iterator_(
+            graph_->GetEdgesWithNode(node_iterator_->Get())) {
+    AdvanceToNextValidEdge();
+  }
+
+  Graph::EdgeType Get() override {
+    assert(!IsAtEnd());
+    return current_edge_iterator_->Get();
+  }
+
+  void Next() override {
+    assert(!IsAtEnd());
+
+    do {
+      current_edge_iterator_->Next();
+      AdvanceToNextValidEdge();
+    } while (!node_iterator_->IsAtEnd() && ShouldSkipCurrentEdge());
+  }
+
+  bool IsAtEnd() override { return current_edge_iterator_ == nullptr; }
+
+private:
+  bool ShouldSkipCurrentEdge() {
+    auto e = current_edge_iterator_->Get();
+    if (e.first != node_iterator_->Get())
+      std::swap(e.first, e.second);
+
+    assert(e.first == node_iterator_->Get());
+    return e.second < e.first;
+  }
+
+  void AdvanceToNextValidEdge() {
+    while (current_edge_iterator_->IsAtEnd() && !node_iterator_->IsAtEnd()) {
+      node_iterator_->Next();
+
+      LOG << "Updating current_edge_iterator_\n";
+      current_edge_iterator_ = graph_->GetEdgesWithNode(node_iterator_->Get());
+    }
+
+    if (node_iterator_->IsAtEnd())
+      current_edge_iterator_ = nullptr;
+  }
+
+  Graph *graph_;
+  std::unique_ptr<Graph::NodeIterator> node_iterator_;
+  std::unique_ptr<Graph::EdgeIterator> current_edge_iterator_;
+};
 } // namespace
 
 std::unique_ptr<Graph::NodeIterator> Graph::GetNodes() {
   return std::make_unique<FiniteNodeIterator>(GetNodeCount());
 }
+
+std::unique_ptr<Graph::EdgeIterator> Graph::GetEdges() {
+  return std::make_unique<FiniteGraphEdgeIterator>(this);
+}
+
+std::optional<std::string> Graph::CheckConsistency() { return std::nullopt; }
 
 namespace {
 class ConcreteGraph final : public Graph {
@@ -38,7 +98,6 @@ public:
                 std::span<Graph::EdgeType> edges)
       : num_nodes_(num_nodes) {
     std::set<Graph::EdgeType> double_edge_set;
-    std::set<Graph::EdgeType> single_edge_set;
     for (Graph::EdgeType e : edges) {
       assert(e.first < num_nodes_);
       assert(e.second < num_nodes_);
@@ -46,17 +105,10 @@ public:
       double_edge_set.insert(e);
       std::swap(e.first, e.second);
       double_edge_set.insert(e);
-
-      if (e.first < e.second)
-        std::swap(e.first, e.second);
-      single_edge_set.insert(e);
     }
 
     for (Graph::EdgeType e : double_edge_set)
-      double_edges_.push_back(e);
-
-    for (Graph::EdgeType e : single_edge_set)
-      single_edges_.push_back(e);
+      edges_.push_back(e);
   }
 
   class EdgeIterator : public Graph::EdgeIterator {
@@ -74,24 +126,20 @@ public:
     std::span<Graph::EdgeType> edges_;
   };
 
-  std::unique_ptr<Graph::EdgeIterator> GetEdges() override {
-    return std::make_unique<EdgeIterator>(single_edges_);
-  }
-
   NodeCountType GetNodeCount() override { return num_nodes_; }
 
   std::unique_ptr<Graph::EdgeIterator>
   GetEdgesWithNode(Graph::NodeType n) override {
     auto it_begin =
-        std::upper_bound(double_edges_.begin(), double_edges_.end(), 0,
+        std::upper_bound(edges_.begin(), edges_.end(), 0,
                          [&](int, Graph::EdgeType e) { return e.first >= n; });
     auto it_end =
-        std::upper_bound(double_edges_.begin(), double_edges_.end(), 0,
+        std::upper_bound(edges_.begin(), edges_.end(), 0,
                          [&](int, Graph::EdgeType e) { return e.first > n; });
-    size_t offset = it_begin - double_edges_.begin();
+    size_t offset = it_begin - edges_.begin();
     size_t size = it_end - it_begin;
     return std::make_unique<EdgeIterator>(
-        std::span<Graph::EdgeType>(double_edges_).subspan(offset, size));
+        std::span<Graph::EdgeType>(edges_).subspan(offset, size));
   }
 
   std::optional<std::string> CheckConsistency() override {
@@ -100,8 +148,7 @@ public:
 
 private:
   Graph::NodeCountType num_nodes_;
-  std::vector<Graph::EdgeType> single_edges_;
-  std::vector<Graph::EdgeType> double_edges_;
+  std::vector<Graph::EdgeType> edges_;
 };
 } // namespace
 
