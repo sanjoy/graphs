@@ -12,8 +12,7 @@ namespace kb {
 namespace {
 class FiniteVertexIterator : public Graph::VertexIterator {
 public:
-  FiniteVertexIterator(Graph::OrderTy num_vertices)
-      : num_vertices_(num_vertices) {}
+  FiniteVertexIterator(Graph::OrderTy order) : order_(order) {}
 
   Graph::VertexTy Get() override { return i_; }
 
@@ -22,11 +21,11 @@ public:
     i_++;
   }
 
-  bool IsAtEnd() override { return i_ == num_vertices_; }
+  bool IsAtEnd() override { return i_ == order_; }
 
 private:
   Graph::OrderTy i_ = 0;
-  const Graph::OrderTy num_vertices_;
+  const Graph::OrderTy order_;
 };
 
 class FiniteGraphEdgeIterator final : public Graph::EdgeIterator {
@@ -94,12 +93,12 @@ std::unique_ptr<Graph::EdgeIterator> Graph::GetEdges() {
 namespace {
 class ConcreteGraph final : public Graph {
 public:
-  ConcreteGraph(Graph::OrderTy num_vertices, std::span<Graph::EdgeTy> edges)
-      : num_vertices_(num_vertices) {
+  ConcreteGraph(Graph::OrderTy order, std::span<Graph::EdgeTy> edges)
+      : order_(order) {
     std::set<Graph::EdgeTy> double_edge_set;
     for (Graph::EdgeTy e : edges) {
-      assert(e.first < num_vertices_);
-      assert(e.second < num_vertices_);
+      assert(e.first < order_);
+      assert(e.second < order_);
 
       double_edge_set.insert(e);
       std::swap(e.first, e.second);
@@ -125,7 +124,7 @@ public:
     std::span<Graph::EdgeTy> edges_;
   };
 
-  OrderTy GetOrder() override { return num_vertices_; }
+  OrderTy GetOrder() override { return order_; }
 
   std::unique_ptr<Graph::EdgeIterator>
   GetEdgesContainingVertex(Graph::VertexTy v) override {
@@ -142,11 +141,11 @@ public:
   }
 
   std::unique_ptr<Graph> Clone() override {
-    return std::make_unique<ConcreteGraph>(num_vertices_, edges_);
+    return std::make_unique<ConcreteGraph>(order_, edges_);
   }
 
 private:
-  Graph::OrderTy num_vertices_;
+  Graph::OrderTy order_;
   std::vector<Graph::EdgeTy> edges_;
 };
 } // namespace
@@ -156,9 +155,9 @@ Graph::~Graph() {}
 Graph::VertexIterator::~VertexIterator() {}
 Graph::EdgeIterator::~EdgeIterator() {}
 
-std::unique_ptr<Graph> CreateConcreteGraph(Graph::OrderTy num_vertices,
+std::unique_ptr<Graph> CreateConcreteGraph(Graph::OrderTy order,
                                            std::span<Graph::EdgeTy> edges) {
-  return std::make_unique<ConcreteGraph>(num_vertices, edges);
+  return std::make_unique<ConcreteGraph>(order, edges);
 }
 
 std::optional<std::string> CheckConsistency(Graph *g) {

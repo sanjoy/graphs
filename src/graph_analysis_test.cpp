@@ -98,11 +98,11 @@ static void TestComputeExactCheegerConstant_K9_WithSelfLoops() {
 }
 
 static double
-ComputeExactCheegerConstantForRandomGraph(Graph::OrderTy num_vertices,
+ComputeExactCheegerConstantForRandomGraph(Graph::OrderTy order,
                                           Graph::OrderTy avg_degree) {
   auto rbg = CreateDefaultRandomBitGenerator();
   std::unique_ptr<Graph> complete_graph =
-      CreateRandomSparseGraph(rbg.get(), num_vertices, avg_degree);
+      CreateRandomSparseGraph(rbg.get(), order, avg_degree);
   return ComputeExactCheegerConstant(complete_graph.get());
 }
 

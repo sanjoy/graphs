@@ -88,7 +88,7 @@ Iterate(std::unique_ptr<Graph::VertexIterator> it) {
       std::move(it));
 }
 
-std::unique_ptr<Graph> CreateConcreteGraph(Graph::OrderTy num_vertices,
+std::unique_ptr<Graph> CreateConcreteGraph(Graph::OrderTy order,
                                            std::span<Graph::EdgeTy> edges);
 
 std::optional<std::string> CheckConsistency(Graph *g);
