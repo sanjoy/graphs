@@ -39,6 +39,13 @@ cc_library(
 )
 
 cc_library(
+    name = "counting",
+    srcs = ["counting.cpp"],
+    hdrs = ["counting.hpp"],
+    deps = [":logging"],
+)
+
+cc_library(
     name = "graph_viz",
     srcs = ["graph_viz.cpp"],
     hdrs = ["graph_viz.hpp"],
@@ -93,4 +100,10 @@ cc_test(
     name = "graph_viz_test",
     srcs = ["graph_viz_test.cpp"],
     deps = [":graph_viz", ":test", ":graph_zoo"]
+)
+
+cc_test(
+    name = "counting_test",
+    srcs = ["counting_test.cpp"],
+    deps = [":counting", ":test"]
 )
